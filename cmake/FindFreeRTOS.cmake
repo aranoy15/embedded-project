@@ -7,25 +7,30 @@ list(REMOVE_DUPLICATES FreeRTOS_FIND_COMPONENTS)
 
 set(FreeRTOS_HEAPS 1 2 3 4 5)
 
-if(NOT FREERTOS_PATH)
-    set(FREERTOS_PATH /opt/FreeRTOS CACHE PATH "Path to FreeRTOS")
-    message(STATUS "No FREERTOS_PATH specified using default: ${FREERTOS_PATH}")
+if (NOT EXISTS "${STM32_CUBE_${FAMILY}_PATH}")
+    if(NOT FREERTOS_PATH)
+        set(FREERTOS_PATH /opt/FreeRTOS CACHE PATH "Path to FreeRTOS")
+        message(STATUS "No FREERTOS_PATH specified using default: ${FREERTOS_PATH}")
+    endif()
+else()
+    set(FREERTOS_PATH "${STM32_CUBE_${FAMILY}_PATH}/Middlewares/Third_Party/FreeRTOS")
 endif()
 
 find_path(FreeRTOS_COMMON_INCLUDE
     NAMES FreeRTOS.h
-    PATHS "${FREERTOS_PATH}" "${FREERTOS_PATH}/FreeRTOS" 
+    PATHS "${FREERTOS_PATH}" "${FREERTOS_PATH}/FreeRTOS"
     PATH_SUFFIXES  "Source/include"
     NO_DEFAULT_PATH
 )
-list(APPEND FreeRTOS_INCLUDE_DIRS "${FreeRTOS_COMMON_INCLUDE}")
+list(APPEND FreeRTOS_INCLUDE_DIRS "STM32_CUBE_${FAMILY}_PATH")
 
 find_path(FreeRTOS_SOURCE_DIR
     NAMES tasks.c
-    PATHS "${FREERTOS_PATH}" "${FREERTOS_PATH}/FreeRTOS" 
+    PATHS "${FREERTOS_PATH}" "${FREERTOS_PATH}/FreeRTOS"
     PATH_SUFFIXES  "Source"
     NO_DEFAULT_PATH
 )
+
 if(NOT (TARGET FreeRTOS))
     add_library(FreeRTOS INTERFACE IMPORTED)
     target_sources(FreeRTOS INTERFACE 
@@ -71,7 +76,7 @@ endforeach()
 foreach(PORT ${FreeRTOS_FIND_COMPONENTS})
     find_path(FreeRTOS_${PORT}_PATH
         NAMES portmacro.h
-        PATHS "${FREERTOS_PATH}" "${FREERTOS_PATH}/FreeRTOS" 
+        PATHS "${FREERTOS_PATH}" "${FREERTOS_PATH}/FreeRTOS"
         PATH_SUFFIXES "Source/portable/GCC/${PORT}"  "Source/portable/GCC/${PORT}/r0p1"
         NO_DEFAULT_PATH
     )

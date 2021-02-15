@@ -3,9 +3,10 @@ cmake_minimum_required(VERSION 3.15)
 #SET(CMAKE_SYSTEM_NAME Generic)
 #SET(CMAKE_SYSTEM_PROCESSOR ARM)
 
-set(STM32_TOOLCHAIN_PATH D:/toolchains/arm_gdb/bin)
+#set(STM32_TOOLCHAIN_PATH D:/toolchains/arm_gdb/bin)
 set(TARGET_TRIPLET arm-none-eabi)
-#set(FLASH_OFFSET 0x2000)
+set(STM32_CUBE_F1_PATH ${CMAKE_CURRENT_SOURCE_DIR}/toolchain/st/STM32CubeF1-1.8.3)
+set(FLASH_OFFSET 0x2000)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/stm32_gcc.cmake)
 
@@ -13,12 +14,9 @@ set(TARGET main)
 
 project(${TARGET} CXX C ASM)
 
-stm32_fetch_cmsis(F1)
-stm32_fetch_hal(F1)
-
 find_package(CMSIS COMPONENTS STM32F1 REQUIRED)
 find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX REQUIRED)
-#find_package(FreeRTOS COMPONENTS ARM_CM3 REQUIRED)
+find_package(FreeRTOS COMPONENTS ARM_CM3 REQUIRED)
 
 
 add_executable(${TARGET} main.cpp)
@@ -34,7 +32,7 @@ target_link_libraries(${TARGET}
     CMSIS::STM32::F103RB
     STM32::NoSys
     #FreeRTOS::ARM_CM3
-    #FreeRTOS::Heap::4
+    #FreeRTOS::Heap::1
 )
 
 #add_definitions(-DUSE_HAL_DRIVER)
@@ -42,11 +40,11 @@ target_link_libraries(${TARGET}
 
 add_custom_target(${TARGET}.generate_bin ALL
     arm-none-eabi-objcopy -Obinary ${CMAKE_BINARY_DIR}/${TARGET}.elf ${CMAKE_BINARY_DIR}/${TARGET}.bin
-    DEPENDS ${NAME}
+    DEPENDS ${TARGET}
 )
 
 add_custom_target(${TARGET}.size ALL
     arm-none-eabi-size ${CMAKE_BINARY_DIR}/${TARGET}.elf
-    DEPENDS ${NAME}
+    DEPENDS ${TARGET}
 )
 
