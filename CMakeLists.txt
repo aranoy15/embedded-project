@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.15)
 #set(STM32_TOOLCHAIN_PATH D:/toolchains/arm_gdb/bin)
 set(TARGET_TRIPLET arm-none-eabi)
 set(STM32_CUBE_F1_PATH ${CMAKE_CURRENT_SOURCE_DIR}/toolchain/st/STM32CubeF1-1.8.3)
-set(FLASH_OFFSET 0x2000)
+#set(FLASH_OFFSET 0x2000)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/stm32_gcc.cmake)
 
@@ -15,28 +15,39 @@ set(TARGET main)
 project(${TARGET} CXX C ASM)
 
 find_package(CMSIS COMPONENTS STM32F1 REQUIRED)
-find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX REQUIRED)
+find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM REQUIRED)
 find_package(FreeRTOS COMPONENTS ARM_CM3 REQUIRED)
 
-
 add_executable(${TARGET} main.cpp)
+
+set_property(TARGET ${TARGET} PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+
 
 target_include_directories(${TARGET} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+add_subdirectory(F103C8)
+
 target_link_libraries(${TARGET}
     HAL::STM32::F1::RCC
     HAL::STM32::F1::GPIO
     HAL::STM32::F1::CORTEX
-    CMSIS::STM32::F103RB
+    HAL::STM32::F1::TIM
+    HAL::STM32::F1::TIMEx
+    CMSIS::STM32::F103C8
     STM32::NoSys
-    #FreeRTOS::ARM_CM3
-    #FreeRTOS::Heap::1
+    FreeRTOS::ARM_CM3
+    FreeRTOS::Heap::1
+    FreeRTOS::Timers
+    FreeRTOS::CMSIS_V2
 )
+
 
 #add_definitions(-DUSE_HAL_DRIVER)
 #add_definitions(-D${STM32_CHIP})
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tools.cmake)
 
 add_custom_target(${TARGET}.generate_bin ALL
     arm-none-eabi-objcopy -Obinary ${CMAKE_BINARY_DIR}/${TARGET}.elf ${CMAKE_BINARY_DIR}/${TARGET}.bin
@@ -48,3 +59,4 @@ add_custom_target(${TARGET}.size ALL
     DEPENDS ${TARGET}
 )
 
+flash(${TARGET} 0x8000000)

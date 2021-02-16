@@ -65,6 +65,13 @@ if(NOT (TARGET FreeRTOS::Timers))
     target_link_libraries(FreeRTOS::Timers INTERFACE FreeRTOS)
 endif()
 
+if(NOT (TARGET FreeRTOS::CMSIS_V2))
+    add_library(FreeRTOS::CMSIS_V2 INTERFACE IMPORTED)
+    target_sources(FreeRTOS::CMSIS_V2 INTERFACE "${FreeRTOS_SOURCE_DIR}/CMSIS_RTOS_V2/cmsis_os2.c")
+    target_include_directories(FreeRTOS::CMSIS_V2 INTERFACE "${FreeRTOS_SOURCE_DIR}/CMSIS_RTOS_V2/")
+    target_link_libraries(FreeRTOS::CMSIS_V2 INTERFACE FreeRTOS)
+endif()
+
 foreach(HEAP ${FreeRTOS_HEAPS})
     if(NOT (TARGET FreeRTOS::Heap::${HEAP}))
         add_library(FreeRTOS::Heap::${HEAP} INTERFACE IMPORTED)
