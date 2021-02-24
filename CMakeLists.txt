@@ -14,35 +14,41 @@ set(TARGET main)
 
 project(${TARGET} CXX C ASM)
 
-find_package(CMSIS COMPONENTS STM32F1 REQUIRED)
-find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM REQUIRED)
-find_package(FreeRTOS COMPONENTS ARM_CM3 REQUIRED)
+set(FAMILY F1)
+set(CHIP F103RB)
+set(PROVIDER st)
+
+find_package(CMSIS COMPONENTS STM32${FAMILY} REQUIRED)
+find_package(HAL COMPONENTS STM32${FAMILY} RCC GPIO CORTEX TIM REQUIRED)
+#find_package(FreeRTOS COMPONENTS ARM_CM3 REQUIRED)
 
 add_executable(${TARGET} main.cpp)
 
 set_property(TARGET ${TARGET} PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
 
-
 target_include_directories(${TARGET} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_subdirectory(F103C8)
+#add_subdirectory(F103C8)
+
+add_subdirectory(csp)
 
 target_link_libraries(${TARGET}
-    HAL::STM32::F1::RCC
-    HAL::STM32::F1::GPIO
-    HAL::STM32::F1::CORTEX
-    HAL::STM32::F1::TIM
-    HAL::STM32::F1::TIMEx
-    CMSIS::STM32::F103C8
-    STM32::NoSys
-    FreeRTOS::ARM_CM3
-    FreeRTOS::Heap::1
-    FreeRTOS::Timers
-    FreeRTOS::CMSIS_V2
+    #HAL::STM32::F1::RCC
+    #HAL::STM32::F1::RCCEx
+    #HAL::STM32::F1::GPIO
+    #HAL::STM32::F1::CORTEX
+    #HAL::STM32::F1::TIM
+    #HAL::STM32::F1::TIMEx
+    #CMSIS::STM32::${CHIP}
+    #STM32::NoSys
+    csp
+    #FreeRTOS::ARM_CM3
+    #FreeRTOS::Heap::1
+    #FreeRTOS::Timers
+    #FreeRTOS::CMSIS_V2
 )
-
 
 #add_definitions(-DUSE_HAL_DRIVER)
 #add_definitions(-D${STM32_CHIP})

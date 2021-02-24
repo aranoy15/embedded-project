@@ -3,7 +3,7 @@
 
 namespace csp::rcc
 {
-
+void init();
 }
 
 #endif /* CSP_ST_F103RB_RCC */

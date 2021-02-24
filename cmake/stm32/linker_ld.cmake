@@ -1,9 +1,3 @@
-#set(CURRENT_FLASH ${FLASH_ORIGIN})
-#set(CURRENT_FLASH_SIZE ${FLASH_SIZE})
-#set(${CURRENT_FLASH} "${CURRENT_FLASH} + ${FLASH_OFFSET}")
-#set(${CURRENT_FLASH_SIZE} "${CURRENT_FLASH_SIZE} - ${FLASH_OFFSET}")
-#message(TRACE "Result flash ${CURRENT_FLASH}")
-#message(TRACE "Result flash size ${CURRENT_FLASH_SIZE}")
 
 if((NOT CCRAM_SIZE) OR (CCRAM_SIZE STREQUAL "0K"))
     set(CCRAM_DEFINITION "")
@@ -46,6 +40,13 @@ SECTIONS\n\
     KEEP(*(.isr_vector))\n\
     . = ALIGN(4);\n\
   } >FLASH\n\
+\n\
+  .device_info :\n\
+  {\n\
+    . = ALIGN(4);\n\
+    KEEP (*(.device_info))\n\
+    . = ALIGN(4);\n\
+  } >FLASH\n\ 
 \n\
   .text :\n\
   {\n\
@@ -144,6 +145,7 @@ ${CCRAM_SECTION}\n\
   }\n\
 \n\
   .ARM.attributes 0 : { *(.ARM.attributes) }\n\
+
 }"
 )
 file(WRITE "${LINKER_SCRIPT}" "${SCRIPT_TEXT}")
