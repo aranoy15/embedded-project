@@ -80,9 +80,10 @@ struct GpioInfo
     Pin pin;
     Mode mode;
     Speed speed;
+    Pullup pullup;
 
-    GpioInfo(Port port, Pin pin, Mode mode, Speed speed)
-        : port(port), pin(pin), mode(mode), speed(speed)
+    GpioInfo(Port port, Pin pin, Mode mode, Speed speed, Pullup pullup)
+        : port(port), pin(pin), mode(mode), speed(speed), pullup(pullup)
     {
     }
 };
@@ -96,14 +97,14 @@ bool state(const GpioInfo& info);
 template<Port port, Pin pin, Mode mode, Speed speed, Pullup pullup>
 struct Gpio
 {
-    static void init() { init(_info); }
-    static void on() { on(_info); }
-    static void off() { off(_info); }
-    static void toggle() { toogle(_info); }
-    static bool state() { return state(_info); }
+    static void init() { csp::gpio::init(_info); }
+    static void on() { csp::gpio::on(_info); }
+    static void off() { csp::gpio::off(_info); }
+    static void toggle() { csp::gpio::toggle(_info); }
+    static bool state() { return csp::gpio::state(_info); }
 
 private:
-    static const GpioInfo _info = GpioInfo(port, pin, mode, speed, pullup);
+    inline static const GpioInfo _info = GpioInfo(port, pin, mode, speed, pullup);
 };
 
 }

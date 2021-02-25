@@ -3,7 +3,8 @@
 
 int main(void)
 {
-    using led_t = csp::gpio::Gpio<csp::gpio::port::_C, csp::gpio::pin::_13, csp::gpio::mode::push_pull>;
+    using namespace csp::gpio;
+    using led_t = Gpio<Port::_C, Pin::_13, Mode::push_pull, Speed::high, Pullup::none>;
 
     csp::init();
     csp::rcc::init();

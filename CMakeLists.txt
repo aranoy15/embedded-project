@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.15)
 #SET(CMAKE_SYSTEM_PROCESSOR ARM)
 
 #set(STM32_TOOLCHAIN_PATH D:/toolchains/arm_gdb/bin)
+
+#set(CMAKE_C_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+
 set(TARGET_TRIPLET arm-none-eabi)
 set(STM32_CUBE_F1_PATH ${CMAKE_CURRENT_SOURCE_DIR}/toolchain/st/STM32CubeF1-1.8.3)
 #set(FLASH_OFFSET 0x2000)
