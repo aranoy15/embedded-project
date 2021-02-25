@@ -12,16 +12,11 @@ void init_clk(csp::gpio::port port);
 def_t* port_to_def(csp::gpio::port port);
 csp::gpio::port def_to_port(def_t* def);
 
-template <port _port, pin _pin, mode _mode, speed _speed = speed::low, pullup _pullup = pullup::none>
-struct Gpio : public GpioBase<_port, _pin, _mode, _speed, _pullup>
-{
-    using pin_t = uint16_t;
-
-    static void init() 
+    void init(const GpioInfo& info) 
     {
         GPIO_InitTypeDef config;
 
-        switch (_mode) {
+        switch (info.mode) {
             case csp::gpio::mode::push_pull:
                 config.Mode = GPIO_MODE_OUTPUT_PP;
                 break;
@@ -33,7 +28,7 @@ struct Gpio : public GpioBase<_port, _pin, _mode, _speed, _pullup>
                 break;
         }
 
-        switch (_speed) {
+        switch (info.speed) {
             default:
             case speed::low:
                 config.Speed = GPIO_SPEED_FREQ_LOW;

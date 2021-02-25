@@ -3,7 +3,7 @@
 
 namespace csp::gpio
 {
-enum class port
+enum class Port
 {
     None = 0,
     _A,
@@ -15,7 +15,7 @@ enum class port
     _G
 };
 
-enum class pin
+enum class Pin
 {
     _0 = 0,
     _1,
@@ -51,7 +51,7 @@ enum class pin
     _31,
 };
 
-enum class mode
+enum class Mode
 {
     push_pull = 0,
     open_drain,
@@ -59,7 +59,7 @@ enum class mode
     analog
 };
 
-enum class speed
+enum class Speed
 {
     low = 0,
     medium,
@@ -67,21 +67,43 @@ enum class speed
     very_high
 };
 
-enum class pullup
+enum class Pullup
 {
     none = 0,
     up,
     down
 };
 
-template<port _port, pin _pin, mode _mode, speed _speed, pullup _pullup>
-struct GpioBase
+struct GpioInfo
 {
-    static void init() {}
-    static void on() {}
-    static void off() {}
-    static void toggle() {}
-    static bool state() { return false; }
+    Port port;
+    Pin pin;
+    Mode mode;
+    Speed speed;
+
+    GpioInfo(Port port, Pin pin, Mode mode, Speed speed)
+        : port(port), pin(pin), mode(mode), speed(speed)
+    {
+    }
+};
+
+void init(const GpioInfo& info);
+void on(const GpioInfo& info);
+void off(const GpioInfo& info);
+void toggle(const GpioInfo& info);
+bool state(const GpioInfo& info);
+
+template<Port port, Pin pin, Mode mode, Speed speed, Pullup pullup>
+struct Gpio
+{
+    static void init() { init(_info); }
+    static void on() { on(_info); }
+    static void off() { off(_info); }
+    static void toggle() { toogle(_info); }
+    static bool state() { return state(_info); }
+
+private:
+    static const GpioInfo _info = GpioInfo(port, pin, mode, speed, pullup);
 };
 
 }
