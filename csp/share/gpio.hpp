@@ -93,11 +93,13 @@ void on(const GpioInfo& info);
 void off(const GpioInfo& info);
 void toggle(const GpioInfo& info);
 bool state(const GpioInfo& info);
+void deinit(const GpioInfo& info);
 
 template<Port port, Pin pin, Mode mode, Speed speed, Pullup pullup>
 struct Gpio
 {
     static void init() { csp::gpio::init(_info); }
+    static void deinit() { csp::gpio::deinit(_info); }
     static void on() { csp::gpio::on(_info); }
     static void off() { csp::gpio::off(_info); }
     static void toggle() { csp::gpio::toggle(_info); }

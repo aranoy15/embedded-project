@@ -3,7 +3,7 @@
 
 namespace csp::uart
 {
-enum class number
+enum class Number
 {
     _1 = 0,
     _2,
@@ -15,33 +15,33 @@ enum class number
     _8
 };
 
-enum class interface
+enum class Interface
 {
     rs232 = 0,
     rs485
 };
 
-enum class parity
+enum class Parity
 {
     none = 0,
     even,
     odd
 };
 
-enum class data_bits
+enum class DataBits
 {
     _7 = 0,
     _8,
     _9
 };
 
-enum class stop_bits
+enum class StopBits
 {
     _1 = 0,
     _2
 };
 
-enum class baud_rate
+enum class BaudRate
 {
     _110 = 110,
     _300 = 300,
@@ -64,6 +64,10 @@ enum class baud_rate
     _921600 = 921600,
 };
 
+void init(Number number, BaudRate baud, DataBits data_bits = DataBits::_8,
+          Parity parity = Parity::none, StopBits stop_bits = StopBits::_1);
+
+void deinit(Number number);
 }
 
 #endif /* CSP_SHARE_UART */

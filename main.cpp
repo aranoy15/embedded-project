@@ -12,7 +12,7 @@ int main(void)
 
     for (;;) {
         led_t::toggle();
-        csp::tick::delay(1000);
+        csp::tick::delay(500);
     }
 
     return 0;

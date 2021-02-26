@@ -7,6 +7,7 @@ void csp::rcc::init()
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    //RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
@@ -36,5 +37,89 @@ void csp::rcc::init()
         csp::error_callback(__FILE__, __LINE__);
     }
 
-    csp::error_callback(__FILE__, __LINE__);
+    //PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
+    //PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
+    //if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
+    //    csp::error_callback(__FILE__, __LINE__);
+    //}
+}
+
+extern "C" {
+/******************************************************************************/
+/*           Cortex-M3 Processor Interruption and Exception Handlers          */
+/******************************************************************************/
+/**
+  * @brief This function handles Non maskable interrupt.
+  */
+void NMI_Handler(void)
+{
+    while (1) {
+    }
+}
+
+/**
+  * @brief This function handles Hard fault interrupt.
+  */
+void HardFault_Handler(void)
+{
+    while (1) {
+    }
+}
+
+/**
+  * @brief This function handles Memory management fault.
+  */
+void MemManage_Handler(void)
+{
+    while (1) {
+    }
+}
+
+/**
+  * @brief This function handles Prefetch fault, memory access fault.
+  */
+void BusFault_Handler(void)
+{
+    while (1) {
+    }
+}
+
+/**
+  * @brief This function handles Undefined instruction or illegal state.
+  */
+void UsageFault_Handler(void)
+{
+    while (1) {
+    }
+}
+
+/**
+  * @brief This function handles System service call via SWI instruction.
+  */
+void SVC_Handler(void)
+{
+}
+
+/**
+  * @brief This function handles Debug monitor.
+  */
+void DebugMon_Handler(void)
+{
+}
+
+/**
+  * @brief This function handles Pendable request for system service.
+  */
+void PendSV_Handler(void)
+{
+}
+
+/**
+  * @brief This function handles System tick timer.
+  */
+void SysTick_Handler(void)
+{
+    HAL_IncTick();
+}
+
 }
