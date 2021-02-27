@@ -32,7 +32,7 @@ target_sources(csp_core INTERFACE
 
 target_include_directories(csp_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/csp
+    ${CMAKE_SOURCE_DIR}/csp/share
 )
 
 target_link_libraries(csp_core INTERFACE
@@ -65,7 +65,7 @@ target_sources(csp_uart INTERFACE
 
 target_include_directories(csp_uart INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../
+    ${CMAKE_SOURCE_DIR}/csp/share
 )
 
 target_link_libraries(csp_uart INTERFACE

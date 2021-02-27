@@ -17,3 +17,11 @@ int main(void)
 
     return 0;
 }
+
+namespace csp::rcc
+{
+void systick_handler()
+{
+    csp::rcc::increment_tick();
+}
+}

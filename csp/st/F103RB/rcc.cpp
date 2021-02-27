@@ -1,7 +1,15 @@
-#include <rcc.hpp>
-#include <share/csp.hpp>
-
+#include <csp.hpp>
 #include <stm32f1xx_hal.h>
+
+namespace csp::rcc
+{
+void systick_handler();
+}
+
+void csp::rcc::increment_tick()
+{
+    HAL_IncTick();
+}
 
 void csp::rcc::init()
 {
@@ -119,7 +127,12 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-    HAL_IncTick();
+    csp::rcc::systick_handler();
 }
 
+}
+
+__weak void csp::rcc::systick_handler()
+{
+    error_callback(__FILE__, __LINE__);
 }
