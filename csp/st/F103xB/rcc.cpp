@@ -1,10 +1,5 @@
 #include <csp.hpp>
-#include <stm32f1xx_hal.h>
-
-namespace csp::rcc
-{
-void systick_handler();
-}
+#include <hal.hpp>
 
 void csp::rcc::increment_tick()
 {

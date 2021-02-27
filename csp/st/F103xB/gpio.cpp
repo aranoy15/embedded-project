@@ -1,5 +1,5 @@
 #include <csp.hpp>
-#include <stm32f1xx_hal.h>
+#include <hal.hpp>
 
 using namespace csp::gpio;
 
@@ -23,6 +23,7 @@ void init_clk(Port port);
 void deinit_clk(Port port);
 def_t* port_to_def(Port port);
 Port def_to_port(def_t* def);
+uint32_t speed_parse(Speed speed);
 
 void init_clk(csp::gpio::Port port)
 {
@@ -109,112 +110,18 @@ Port def_to_port(def_t* def)
         return Port::None;
 }
 
-void init(const GpioInfo& info)
+uint32_t speed_parse(Speed speed)
 {
-    GPIO_InitTypeDef config;
-
-    switch (info.mode) {
-        case Mode::push_pull:
-            config.Mode = GPIO_MODE_OUTPUT_PP;
-            break;
-        case Mode::open_drain:
-            config.Mode = GPIO_MODE_OUTPUT_OD;
-            break;
-        case Mode::input:
-            config.Mode = GPIO_MODE_INPUT;
-            break;
-        default:
-        case Mode::analog:
-            break;
-    }
-
-    switch (info.speed) {
+    switch (speed) {
         default:
         case Speed::low:
-            config.Speed = GPIO_SPEED_FREQ_LOW;
-            break;
+            return GPIO_SPEED_FREQ_LOW;
         case Speed::medium:
-            config.Speed = GPIO_SPEED_FREQ_MEDIUM;
-            break;
+            return GPIO_SPEED_FREQ_MEDIUM;
+        case Speed::very_high:
         case Speed::high:
-            config.Speed = GPIO_SPEED_FREQ_HIGH;
-            break;
+            return GPIO_SPEED_FREQ_HIGH;
     }
-
-    switch (info.pullup) {
-        default:
-        case Pullup::none:
-            config.Pull = GPIO_NOPULL;
-            break;
-        case Pullup::up:
-            config.Pull = GPIO_PULLUP;
-            break;
-        case Pullup::down:
-            config.Pull = GPIO_PULLDOWN;
-            break;
-    }
-
-    config.Pin = pin_value(info);
-
-    init_clk(info.port);
-
-    def_t* port_res = port_to_def(info.port);
-
-    if (port_res == nullptr) csp::error_callback(__FILE__, __LINE__);
-
-    HAL_GPIO_Init(port_res, &config);
-}
-
-void deinit(const GpioInfo& info)
-{
-    pin_t pin = pin_value(info);
-    def_t* port = port_to_def(info.port);
-
-    if (port == nullptr) csp::error_callback(__FILE__, __LINE__);
-
-    deinit_clk(info.port);
-
-    HAL_GPIO_DeInit(port, pin);
-}
-
-void on(const GpioInfo& info)
-{
-    pin_t pin = pin_value(info);
-    def_t* port = port_to_def(info.port);
-
-    if (port == nullptr) csp::error_callback(__FILE__, __LINE__);
-
-    HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
-}
-
-void off(const GpioInfo& info)
-{
-    pin_t pin = pin_value(info);
-    def_t* port = port_to_def(info.port);
-
-    if (port == nullptr) csp::error_callback(__FILE__, __LINE__);
-
-    HAL_GPIO_WritePin(port, pin, GPIO_PIN_RESET);
-}
-
-void toggle(const GpioInfo& info)
-{
-    pin_t pin = pin_value(info);
-    def_t* port = port_to_def(info.port);
-
-    if (port == nullptr) csp::error_callback(__FILE__, __LINE__);
-
-    HAL_GPIO_TogglePin(port, pin);
-}
-
-bool state(const GpioInfo& info)
-{
-    pin_t pin = pin_value(info);
-    def_t* port = port_to_def(info.port);
-
-    if (port == nullptr) csp::error_callback(__FILE__, __LINE__);
-
-    return HAL_GPIO_ReadPin(port, pin) == GPIO_PIN_SET;
 }
 
 }  // namespace csp::gpio

@@ -1,25 +1,6 @@
-#target_link_libraries(csp INTERFACE
-#    HAL::STM32::F1::RCC
-#    HAL::STM32::F1::RCCEx
-#    HAL::STM32::F1::GPIO
-#    HAL::STM32::F1::CORTEX
-#    HAL::STM32::F1::UART
-#    HAL::STM32::F1::USART
-#    CMSIS::STM32::${CHIP}
-#    STM32::NoSys
-#)
 
-#target_include_directories(csp INTERFACE
-#    ${CMAKE_CURRENT_SOURCE_DIR}
-#)
+find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM UART USART REQUIRED)
 
-#target_sources(csp INTERFACE
-#    ${CMAKE_CURRENT_SOURCE_DIR}/csp.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/rcc.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/gpio.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/tick.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/interrupts.cpp
-#)
 
 add_library(csp_core INTERFACE)
 
@@ -40,7 +21,7 @@ target_link_libraries(csp_core INTERFACE
     HAL::STM32::F1::RCCEx
     HAL::STM32::F1::CORTEX
     HAL::STM32::F1::GPIO
-    CMSIS::STM32::${CHIP}
+    CMSIS::STM32::F103xB
     STM32::NoSys
 )
 
