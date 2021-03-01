@@ -1,5 +1,6 @@
 
 #include <csp.hpp>
+#include <cstring>
 
 int main(void)
 {
@@ -8,10 +9,14 @@ int main(void)
 
     csp::init();
     csp::rcc::init();
+    csp::usb::init(csp::usb::Number::_1, csp::usb::Speed::full_speed);
     led_t::init();
+
+    uint8_t data[] = "Hello, World!\r\n";
 
     for (;;) {
         led_t::toggle();
+        csp::usb::send(data, strlen((const char*)data));
         csp::tick::delay(500);
     }
 

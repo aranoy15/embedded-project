@@ -20,7 +20,6 @@ set(CHIP F401xC)
 set(PROVIDER st)
 
 find_package(CMSIS COMPONENTS STM32${FAMILY} REQUIRED)
-find_package(USB COMPONENTS DEVICE::CDC )#REQUIRED)
 
 add_executable(${TARGET} main.cpp)
 
@@ -38,6 +37,7 @@ add_subdirectory(csp)
 
 target_link_libraries(${TARGET} PRIVATE
     CSP::CORE
+    CSP::DEVICE::USB::CDC
     #CSP::UART
     #FreeRTOS::ARM_CM3
     #FreeRTOS::Heap::1

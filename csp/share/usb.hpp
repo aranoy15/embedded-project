@@ -15,6 +15,9 @@ enum class Speed
     full_speed = 0,
     high_speed
 };
+
+void init(Number number, Speed speed);
+void send(uint8_t data[], std::size_t size);
 }
 
 #endif /* CSP_SHARE_USB */
