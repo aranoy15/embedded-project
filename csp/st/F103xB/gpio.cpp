@@ -6,15 +6,7 @@ using namespace csp::gpio;
 namespace
 {
 using pin_t = uint16_t;
-
-pin_t pin_value(const GpioInfo& info)
-{
-    return static_cast<pin_t>(1 << static_cast<pin_t>(info.pin));
-}
-
 using def_t = GPIO_TypeDef;
-
-
 }
 
 namespace csp::gpio

@@ -8,7 +8,8 @@ target_sources(csp_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/csp.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/rcc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gpio.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/tick.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../share/gpio.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../share/tick.cpp
 )
 
 target_include_directories(csp_core INTERFACE

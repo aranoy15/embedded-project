@@ -15,6 +15,8 @@ project(${TARGET} CXX C ASM)
 
 set(FAMILY F4)
 set(CHIP F401xC)
+#set(FAMILY F1)
+#set(CHIP F103xB)
 set(PROVIDER st)
 
 find_package(CMSIS COMPONENTS STM32${FAMILY} REQUIRED)
