@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -18,7 +18,7 @@ set(CHIP F401xC)
 set(PROVIDER st)
 
 find_package(CMSIS COMPONENTS STM32${FAMILY} REQUIRED)
-find_package(USB )#REQUIRED)
+find_package(USB COMPONENTS DEVICE::CDC )#REQUIRED)
 
 add_executable(${TARGET} main.cpp)
 
