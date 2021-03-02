@@ -6,21 +6,22 @@ void csp::rcc::increment_tick()
     HAL_IncTick();
 }
 
+// 72 MHz
 void csp::rcc::init()
 {
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-    //RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
      */
-    RCC_OscInitStruct.OscillatorType =
-        RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
     RCC_OscInitStruct.HSEState = RCC_HSE_ON;
     RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-    RCC_OscInitStruct.LSIState = RCC_LSI_ON;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
@@ -40,11 +41,11 @@ void csp::rcc::init()
         csp::error_callback(__FILE__, __LINE__);
     }
 
-    //PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
-    //PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
-    //if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
-    //    csp::error_callback(__FILE__, __LINE__);
-    //}
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
+    PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
+        csp::error_callback(__FILE__, __LINE__);
+    }
 }
 
 extern "C" {

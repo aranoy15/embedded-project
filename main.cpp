@@ -9,14 +9,14 @@ int main(void)
 
     csp::init();
     csp::rcc::init();
-    csp::usb::init(csp::usb::Number::_1, csp::usb::Speed::full_speed);
     led_t::init();
+    csp::usb::init(csp::usb::Number::_1);
 
     uint8_t data[] = "Hello, World!\r\n";
 
     for (;;) {
         led_t::toggle();
-        csp::usb::send(data, strlen((const char*)data));
+        csp::usb::send(csp::usb::Number::_1, data, strlen((const char*)data));
         csp::tick::delay(500);
     }
 

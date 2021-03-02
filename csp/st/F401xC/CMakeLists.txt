@@ -22,7 +22,6 @@ target_link_libraries(csp_core INTERFACE
     HAL::STM32::F4::RCCEx
     HAL::STM32::F4::CORTEX
     HAL::STM32::F4::GPIO
-    HAL::STM32::F4::LL_USB
     CMSIS::STM32::F401xC
     STM32::NoSys
 )

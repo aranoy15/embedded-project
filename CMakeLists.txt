@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.19)
 
-set(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_SYSTEM_NAME Generic)
+SET(CMAKE_SYSTEM_PROCESSOR ARM)
 
-#set(STM32_CUBE_F1_PATH ${CMAKE_CURRENT_SOURCE_DIR}/toolchain/st/STM32CubeF1-1.8.3)
-set(STM32_CUBE_F4_PATH ${CMAKE_CURRENT_SOURCE_DIR}/toolchain/st/STM32CubeF4-1.25.2)
+set(CMAKE_CXX_STANDARD 17)
+
+set(STM32_CUBE_F1_PATH ${CMAKE_CURRENT_SOURCE_DIR}/toolchain/st/STM32CubeF1-1.8.3)
+#set(STM32_CUBE_F4_PATH ${CMAKE_CURRENT_SOURCE_DIR}/toolchain/st/STM32CubeF4-1.25.2)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/stm32-cmake/cmake/stm32_gcc.cmake)
 
@@ -13,10 +16,10 @@ set(TARGET main)
 
 project(${TARGET} CXX C ASM)
 
-set(FAMILY F4)
-set(CHIP F401xC)
-#set(FAMILY F1)
-#set(CHIP F103xB)
+#set(FAMILY F4)
+#set(CHIP F401xC)
+set(FAMILY F1)
+set(CHIP F103xB)
 set(PROVIDER st)
 
 find_package(CMSIS COMPONENTS STM32${FAMILY} REQUIRED)
@@ -34,6 +37,9 @@ stm32_add_linker_script(${TARGET} PRIVATE
 )
 
 add_subdirectory(csp)
+
+target_compile_options(${TARGET} PRIVATE
+)
 
 target_link_libraries(${TARGET} PRIVATE
     CSP::CORE

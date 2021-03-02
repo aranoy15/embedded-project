@@ -1,5 +1,5 @@
 
-find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM UART USART REQUIRED)
+find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM UART USART PCD LL_USB REQUIRED)
 
 
 add_library(csp_core INTERFACE)
@@ -61,3 +61,5 @@ target_compile_definitions(csp_uart INTERFACE
 )
 
 add_library(CSP::UART ALIAS csp_uart)
+
+add_subdirectory(usb/cdc)

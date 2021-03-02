@@ -10,14 +10,8 @@ enum class Number
     _3
 };
 
-enum class Speed
-{
-    full_speed = 0,
-    high_speed
-};
-
-void init(Number number, Speed speed);
-void send(uint8_t data[], std::size_t size);
+void init(Number number);
+void send(Number number, uint8_t data[], std::size_t size);
 }
 
 #endif /* CSP_SHARE_USB */
