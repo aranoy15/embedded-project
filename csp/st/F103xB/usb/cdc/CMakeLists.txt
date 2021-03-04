@@ -4,14 +4,13 @@ add_library(csp_usb_device_cdc INTERFACE)
 
 target_sources(csp_usb_device_cdc INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/usb.cpp
-    #${CMAKE_CURRENT_SOURCE_DIR}/usb_device.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/usbd_cdc_if.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/usbd_conf.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/usbd_desc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/conf/usbd_conf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/conf/usbd_desc.c
 )
 
 target_include_directories(csp_usb_device_cdc INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/conf
 )
 
 target_link_libraries(csp_usb_device_cdc INTERFACE
