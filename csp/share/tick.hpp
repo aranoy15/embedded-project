@@ -5,8 +5,8 @@
 
 namespace csp::tick
 {
-uint32_t current();
-void delay(uint32_t ms);
+std::uint32_t current();
+void delay(std::uint32_t ms);
 }  // namespace csp::tick
 
 #endif /* CSP_SHARE_TICK */

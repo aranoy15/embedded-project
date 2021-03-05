@@ -166,6 +166,8 @@ USBD_CDC_ItfTypeDef usbd_interface_fops_fs =
 
 namespace csp::usb
 {
+namespace device::cdc
+{
 void init(Number)
 {
     if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK) {
@@ -183,6 +185,7 @@ void init(Number)
     if (USBD_Start(&hUsbDeviceFS) != USBD_OK) {
         csp::error_callback(__FILE__, __LINE__);
     }
+}
 }
 
 void transmit(Number, uint8_t data[], std::size_t size)

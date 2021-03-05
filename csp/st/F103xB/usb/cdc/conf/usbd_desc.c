@@ -63,10 +63,20 @@
   * @{
   */
 
+/*
 #define USBD_VID     1155
 #define USBD_LANGID_STRING     1033
 #define USBD_MANUFACTURER_STRING     "Personal manufacture"
 #define USBD_PID_FS     22336
+#define USBD_PRODUCT_STRING_FS     "Meteostation VP"
+#define USBD_CONFIGURATION_STRING_FS     "CDC Config"
+#define USBD_INTERFACE_STRING_FS     "CDC Interface"
+*/
+
+#define USBD_VID     8137
+#define USBD_LANGID_STRING     1033
+#define USBD_MANUFACTURER_STRING     "Personal manufacture"
+#define USBD_PID_FS     7
 #define USBD_PRODUCT_STRING_FS     "Meteostation VP"
 #define USBD_CONFIGURATION_STRING_FS     "CDC Config"
 #define USBD_INTERFACE_STRING_FS     "CDC Interface"
