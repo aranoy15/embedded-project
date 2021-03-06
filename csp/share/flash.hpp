@@ -7,8 +7,7 @@ namespace csp::flash
 {
 void lock();
 void unlock();
-bool erase(std::uint32_t address);
-bool full_erase();
+bool erase(std::uint32_t start, std::uint32_t end);
 bool write(std::uint32_t address, const std::uint8_t data[], std::size_t size);
 bool read(std::uint32_t address, const std::uint8_t data[], std::size_t size);
 void jump(const std::uint32_t address);

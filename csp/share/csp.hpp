@@ -4,6 +4,7 @@
 #include <gpio.hpp>
 #include <rcc.hpp>
 #include <tick.hpp>
+#include <flash.hpp>
 #include <uart.hpp>
 #include <usb.hpp>
 
