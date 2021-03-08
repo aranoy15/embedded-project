@@ -1,12 +1,12 @@
 #ifndef CSP_SHARE_CSP
 #define CSP_SHARE_CSP
 
-#include <gpio.hpp>
-#include <rcc.hpp>
-#include <tick.hpp>
-#include <flash.hpp>
-#include <uart.hpp>
-#include <usb.hpp>
+#include <csp/share/gpio.hpp>
+#include <csp/share/rcc.hpp>
+#include <csp/share/tick.hpp>
+#include <csp/share/flash.hpp>
+#include <csp/share/uart.hpp>
+#include <csp/share/usb.hpp>
 
 namespace csp
 {

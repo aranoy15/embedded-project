@@ -4,4 +4,5 @@
 #    ${CMAKE_CURRENT_SOURCE_DIR}
 #)
 
-add_subdirectory(${PROVIDER}/${CHIP})
+#add_subdirectory(${PROVIDER}/${CHIP})
+add_subdirectory(st)

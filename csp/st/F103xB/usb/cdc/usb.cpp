@@ -1,4 +1,4 @@
-#include <csp.hpp>
+#include <csp/share/csp.hpp>
 #include <hal.hpp>
 
 #include "usbd_core.h"
@@ -173,9 +173,10 @@ namespace device::cdc
     }
 }  // namespace device::cdc
 
-void transmit(Number, uint8_t data[], std::size_t size)
+bool transmit(Number, uint8_t data[], std::size_t size)
 {
     cdc_transmit_fs(data, size);
+    return true;
 }
 
 void start_receive(Number)

@@ -100,9 +100,25 @@ struct Gpio
 {
     static void init() { csp::gpio::init(_info); }
     static void deinit() { csp::gpio::deinit(_info); }
-    static void on() { csp::gpio::on(_info); }
-    static void off() { csp::gpio::off(_info); }
-    static void toggle() { csp::gpio::toggle(_info); }
+
+    static void on() 
+    { 
+        static_assert(mode == Mode::push_pull or mode == Mode::open_drain);
+        csp::gpio::on(_info); 
+    }
+
+    static void off() 
+    { 
+        static_assert(mode == Mode::push_pull or mode == Mode::open_drain);
+        csp::gpio::off(_info); 
+    }
+
+    static void toggle() 
+    { 
+        static_assert(mode == Mode::push_pull or mode == Mode::open_drain);
+        csp::gpio::toggle(_info); 
+    }
+
     static bool state() { return csp::gpio::state(_info); }
 
 private:
