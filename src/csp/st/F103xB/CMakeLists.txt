@@ -18,7 +18,7 @@ target_sources(csp_f103xb_core INTERFACE
 
 target_include_directories(csp_f103xb_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/csp/share
+    ${CMAKE_SOURCE_DIR}/src/csp/share
 )
 
 target_link_libraries(csp_f103xb_core INTERFACE

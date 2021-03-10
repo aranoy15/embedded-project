@@ -5,7 +5,7 @@ set_property(TARGET boot PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
 
 message("Boot libs: ${BOOT_LIBS}")
 
-target_include_directories(boot PUBLIC ${CMAKE_SOURCE_DIR})
+target_include_directories(boot PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(boot PRIVATE ${BOOT_LIBS})
 
@@ -14,11 +14,11 @@ stm32_add_linker_script(boot PRIVATE
 )
 
 add_custom_target(boot.generate_bin ALL
-    ${STM32_TARGET_TRIPLET}-objcopy -Obinary ${CMAKE_BINARY_DIR}/boot/boot.elf ${CMAKE_BINARY_DIR}/boot.bin
+    ${STM32_TARGET_TRIPLET}-objcopy -Obinary ${CMAKE_BINARY_DIR}/src/boot/boot.elf ${CMAKE_BINARY_DIR}/boot.bin
     DEPENDS boot
 )
 
 add_custom_target(${TARGET}.size ALL
-    ${STM32_TARGET_TRIPLET}-size ${CMAKE_BINARY_DIR}/boot/boot.elf
+    ${STM32_TARGET_TRIPLET}-size ${CMAKE_BINARY_DIR}/src/boot/boot.elf
     DEPENDS boot
 )
