@@ -8,14 +8,15 @@ int main(void)
     bsp::init();
     bsp::gpio::status::init();
     bsp::usb::init();
+    bsp::os::init();
 
-    auto start = bsp::os::current();
+    bsp::os::time::time_t start = bsp::os::time::current();
     const uint8_t data[] = "Ok receive\n";
 
     for (;;) {
-        if ((bsp::os::current() - start) >= 500) {
+        if ((bsp::os::time::current() - start) >= 500) {
             bsp::gpio::status::toggle();
-            start = bsp::os::current();
+            start = bsp::os::time::current();
         }
 
         if (bsp::usb::count() > 0) {

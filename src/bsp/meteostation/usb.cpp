@@ -1,10 +1,12 @@
-#include <usb.hpp>
+#include <bsp/meteostation/usb.hpp>
 #include <cstring>
+#include <circular_buffer.hpp>
 
 namespace
 {
-std::uint8_t rx_data[255];
-std::size_t rx_size = 0;
+constexpr std::size_t queue_size = 256;
+using data_t = lib::buffers::circular_buffer<uint8_t, queue_size>;
+data_t rx_data;
 }
 
 namespace bsp::usb
@@ -22,7 +24,7 @@ void deinit()
 
 std::size_t count()
 {
-    return rx_size;
+    return rx_data.size();
 }
 
 bool send(const std::uint8_t data[], std::size_t size)
@@ -32,14 +34,11 @@ bool send(const std::uint8_t data[], std::size_t size)
 
 bool read(std::uint8_t data[], std::size_t size)
 {
-    if (size > sizeof(rx_data) or rx_size == 0 or size > rx_size) return false;
+    if (size > rx_data.size() or rx_data.empty() or size > queue_size) return false;
 
     for (std::size_t i = 0; i < size; ++i) {
-        data[i] = rx_data[i];
+        data[i] = rx_data.get();
     }
-
-    std::memmove(&rx_data[0], &rx_data[size], rx_size - size);
-    rx_size -= size;
 
     return true;
 }
@@ -55,13 +54,10 @@ namespace csp::usb
 void receive_callback(Number number, uint8_t data[], std::size_t size)
 {
     if (number == csp::usb::Number::_1) {
-        if (rx_size < sizeof(rx_data)) {
-            memcpy(&rx_data[rx_size], data, size);
-
-            if ((rx_size + size) > sizeof(rx_data))
-                rx_size = sizeof(rx_data);
-            else
-                rx_size += size;
+        for (std::size_t i = 0; i < size; ++i) {
+            if (not rx_data.full()) {
+                rx_data.put(data[i]);
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ target_include_directories(boot PUBLIC ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(boot PRIVATE ${BOOT_LIBS})
 
 stm32_add_linker_script(boot PRIVATE 
-    ${CMAKE_SOURCE_DIR}/toolchain/linker/${PROVIDER}/${CHIP}/gcc/boot/${BOOT_ADDRESS}.ld
+    ${CMAKE_SOURCE_DIR}/toolchain/linker/${PROVIDER}/${CHIP}/gcc/boot/link.ld
 )
 
 add_custom_target(boot.generate_bin ALL

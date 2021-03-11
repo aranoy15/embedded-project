@@ -1,10 +1,11 @@
+set(STM32_CUBE_F4_PATH ${CMAKE_SOURCE_DIR}/toolchain/st/STM32CubeF4-1.25.2)
 
+find_package(CMSIS COMPONENTS STM32F4 REQUIRED)
 find_package(HAL COMPONENTS STM32F4 RCC GPIO CORTEX TIM UART USART PCD LL_USB REQUIRED)
 
+add_library(csp_f401xc_core INTERFACE)
 
-add_library(csp_core INTERFACE)
-
-target_sources(csp_core INTERFACE
+target_sources(csp_f401xc_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/csp.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/rcc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gpio.cpp
@@ -12,12 +13,12 @@ target_sources(csp_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/../share/tick.cpp
 )
 
-target_include_directories(csp_core INTERFACE
+target_include_directories(csp_f401xc_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/csp/share
+    ${CMAKE_SOURCE_DIR}/src/csp/share
 )
 
-target_link_libraries(csp_core INTERFACE
+target_link_libraries(csp_f401xc_core INTERFACE
     HAL::STM32::F4::RCC
     HAL::STM32::F4::RCCEx
     HAL::STM32::F4::CORTEX
@@ -26,7 +27,7 @@ target_link_libraries(csp_core INTERFACE
     STM32::NoSys
 )
 
-target_compile_definitions(csp_core INTERFACE
+target_compile_definitions(csp_f401xc_core INTERFACE
     -DHAL_MODULE_ENABLED
     -DHAL_CORTEX_MODULE_ENABLED
     -DHAL_DMA_MODULE_ENABLED
@@ -37,6 +38,6 @@ target_compile_definitions(csp_core INTERFACE
     -DHAL_RCC_MODULE_ENABLED
 )
 
-add_library(CSP::CORE ALIAS csp_core)
+add_library(CSP::F401xC::CORE ALIAS csp_f401xc_core)
 
 add_subdirectory(usb/cdc)

@@ -1,8 +1,8 @@
 #ifndef BSP_METEOSTATION_BSP
 #define BSP_METEOSTATION_BSP
 
-#include <bsp/meteostation_v1/gpio.hpp>
-#include <bsp/meteostation_v1/usb.hpp>
+#include <bsp/meteostation/gpio.hpp>
+#include <bsp/meteostation/usb.hpp>
 
 namespace bsp
 {

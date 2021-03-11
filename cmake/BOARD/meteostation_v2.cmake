@@ -1,4 +1,4 @@
-set(CHIP F103xB)
+set(CHIP F401xC)
 set(PROVIDER st)
 set(BOARD_BSP meteostation)
 set(HAVE_BOOT TRUE)

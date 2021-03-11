@@ -6,17 +6,12 @@ set(DEVICE_USB_INCLUDE_DIRS "")
 set(DEVICE_USB_SOURCES "")
 
 if (EXISTS ${STM32_CUBE_${FAMILY}_PATH})
-    message(STATUS "Cube folder exists")
-
     set(DEVICE_BASE_FOLDER "${STM32_CUBE_${FAMILY}_PATH}/Middlewares/ST/${DEVICE_FOLDER_NAME}")
 
     foreach(COMP ${DeviceUSB_FIND_COMPONENTS})
         string(TOLOWER ${COMP} COMP_L)
-        message(STATUS "Component ${COMP}")
 
         set(DEVICE_USB_CORE_FOLDER "${DEVICE_BASE_FOLDER}/Core")
-
-        message(STATUS "Core folder: ${DEVICE_USB_CORE_FOLDER}")
 
         if (NOT (TARGET USB::DEVICE::CORE))
             message(STATUS "Configure Device USB Core library")
@@ -61,8 +56,8 @@ endif()
 list(REMOVE_DUPLICATES DEVICE_USB_INCLUDE_DIRS)
 list(REMOVE_DUPLICATES DEVICE_USB_SOURCES)
 
-message(STATUS "Device USB Includes: ${DEVICE_USB_INCLUDE_DIRS}")
-message(STATUS "Device USB sources: ${DEVICE_USB_SOURCES}")
+#message(STATUS "Device USB Includes: ${DEVICE_USB_INCLUDE_DIRS}")
+#message(STATUS "Device USB sources: ${DEVICE_USB_SOURCES}")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(DeviceUSB

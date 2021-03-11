@@ -9,8 +9,8 @@ USBD_HandleTypeDef hUsbDeviceFS;
 
 namespace 
 {
-constexpr std::size_t rx_size = 1000;
-constexpr std::size_t tx_size = 1000;
+constexpr std::size_t rx_size = 256;
+constexpr std::size_t tx_size = 256;
 
 uint8_t user_rx_buffer[rx_size];
 uint8_t user_tx_buffer[tx_size];

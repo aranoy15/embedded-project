@@ -11,8 +11,8 @@ USBD_HandleTypeDef hUsbDeviceFS;
 namespace
 {
 
-constexpr std::size_t rx_size = 1000;
-constexpr std::size_t tx_size = 1000;
+constexpr std::size_t rx_size = 256;
+constexpr std::size_t tx_size = 256;
 
 uint8_t user_rx_buffer[rx_size];
 uint8_t user_tx_buffer[tx_size];
@@ -166,28 +166,32 @@ USBD_CDC_ItfTypeDef usbd_interface_fops_fs =
 
 namespace csp::usb
 {
-void init(Number)
+namespace device::cdc
 {
-    if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK) {
-        csp::error_callback(__FILE__, __LINE__);
-    }
+    void init(Number)
+    {
+        if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK) {
+            csp::error_callback(__FILE__, __LINE__);
+        }
 
-    if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC) != USBD_OK) {
-        csp::error_callback(__FILE__, __LINE__);
-    }
+        if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC) != USBD_OK) {
+            csp::error_callback(__FILE__, __LINE__);
+        }
 
-    if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &usbd_interface_fops_fs) != USBD_OK) {
-        csp::error_callback(__FILE__, __LINE__);
-    }
+        if (USBD_CDC_RegisterInterface(&hUsbDeviceFS,
+                                       &usbd_interface_fops_fs) != USBD_OK) {
+            csp::error_callback(__FILE__, __LINE__);
+        }
 
-    if (USBD_Start(&hUsbDeviceFS) != USBD_OK) {
-        csp::error_callback(__FILE__, __LINE__);
+        if (USBD_Start(&hUsbDeviceFS) != USBD_OK) {
+            csp::error_callback(__FILE__, __LINE__);
+        }
     }
-}
+}  // namespace device::cdc
 
-void transmit(Number, uint8_t data[], std::size_t size)
+bool transmit(Number, uint8_t data[], std::size_t size)
 {
-    cdc_transmit_fs(data, size);
+    return cdc_transmit_fs(data, size) == USBD_OK;
 }
 
 void start_receive(Number)
