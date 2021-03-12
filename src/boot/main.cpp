@@ -2,6 +2,9 @@
 #include <bsp.hpp>
 #include <os.hpp>
 #include <cstring>
+#include <wake.hpp>
+
+using protocol_t = lib::wake::Protocol<uint8_t, uint8_t, uint8_t, 256>;
 
 int main(void)
 {
@@ -23,6 +26,8 @@ int main(void)
             while (bsp::usb::count() > 0) {
                 uint8_t b = 0;
                 bsp::usb::read(b);
+
+                protocol_t::process(b);
             }
 
             bsp::usb::send(data, sizeof(data));

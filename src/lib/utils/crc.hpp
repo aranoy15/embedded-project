@@ -6,7 +6,7 @@
 namespace lib::crc
 {
 template<typename base, std::uint8_t polynom, std::uint8_t init>
-base calc(std::uint8_t data[], std::size_t size)
+base calc(const std::uint8_t data[], std::size_t size)
 {
     base result = init;
 
@@ -19,6 +19,8 @@ base calc(std::uint8_t data[], std::size_t size)
                         result << 1;
         }
     }
+
+    return result;
 }
 }
 

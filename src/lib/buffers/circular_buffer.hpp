@@ -14,22 +14,22 @@ public:
 	{
 	}
 
-    bool empty() const
+    bool empty() const noexcept
     {
         return (not _full and (_head == _tail));
     }
 
-    bool full() const
+    bool full() const noexcept
     {
         return _full;
     }
 
-    size_t capacity() const
+    size_t capacity() const noexcept
     {
         return max_size;
     }
 
-    size_t size() const
+    size_t size() const noexcept
     {
         size_t size = max_size;
 
@@ -41,7 +41,7 @@ public:
         return size;
     }
 
-    void put(T item)
+    void put(T item) noexcept
     {
         _buffer[_head] = item;
 
@@ -54,7 +54,7 @@ public:
         _full = _head == _tail;
     }
 
-    T get() 
+    T get() noexcept
     {
         if (empty()) return T();
 
@@ -65,7 +65,7 @@ public:
         return result;
     }
 
-    void reset()
+    void reset() noexcept
     {
         _head = _tail;
         _full = false;
