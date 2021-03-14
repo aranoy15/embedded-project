@@ -4,7 +4,7 @@
 #include <cstring>
 #include <wake.hpp>
 
-using protocol_t = lib::wake::Protocol<uint8_t, uint8_t, uint8_t, 256>;
+using protocol_t = lib::wake::Protocol<uint8_t, uint8_t, uint8_t, 256, 0xFF, 0x8B>;
 
 int main(void)
 {

@@ -39,7 +39,8 @@ private:
     byte_t* _data;
 };
 
-template <typename address_type, typename command_type, typename length_type, std::size_t frame_size>
+template <typename address_type, typename command_type, typename length_type,
+          std::size_t frame_size, length_type crc_base, length_type crc_polynom>
 class Protocol final
 {
 
@@ -84,8 +85,10 @@ private:
     inline static length_type _length = 0;
 };
 
-template <typename address_type, typename command_type, typename length_type, std::size_t frame_size>
-std::size_t Protocol<address_type, command_type, length_type, frame_size>::header_length() noexcept
+template <typename address_type, typename command_type, typename length_type,
+          std::size_t frame_size, length_type crc_base, length_type crc_polynom>
+std::size_t Protocol<address_type, command_type, length_type, frame_size,
+                     crc_base, crc_polynom>::header_length() noexcept
 {
     std::size_t result = 0;
 
@@ -96,8 +99,10 @@ std::size_t Protocol<address_type, command_type, length_type, frame_size>::heade
     return result;
 }
 
-template <typename address_type, typename command_type, typename length_type, std::size_t frame_size>
-length_type Protocol<address_type, command_type, length_type, frame_size>::packet_size() noexcept
+template <typename address_type, typename command_type, typename length_type,
+          std::size_t frame_size, length_type crc_base, length_type crc_polynom>
+length_type Protocol<address_type, command_type, length_type, frame_size,
+                     crc_base, crc_polynom>::packet_size() noexcept
 {
     length_type result = 0;
 
@@ -109,8 +114,10 @@ length_type Protocol<address_type, command_type, length_type, frame_size>::packe
     return result;
 }
 
-template <typename address_type, typename command_type, typename length_type, std::size_t frame_size>
-bool Protocol<address_type, command_type, length_type, frame_size>::process(uint8_t b) noexcept
+template <typename address_type, typename command_type, typename length_type,
+          std::size_t frame_size, length_type crc_base, length_type crc_polynom>
+bool Protocol<address_type, command_type, length_type, frame_size,
+                     crc_base, crc_polynom>::process(uint8_t b) noexcept
 {
     if (_packet_receive) _packet_receive = false;
 
@@ -155,8 +162,10 @@ bool Protocol<address_type, command_type, length_type, frame_size>::process(uint
     return false;
 }
 
-template <typename address_type, typename command_type, typename length_type, std::size_t frame_size>
-void Protocol<address_type, command_type, length_type, frame_size>::clear() noexcept
+template <typename address_type, typename command_type, typename length_type,
+          std::size_t frame_size, length_type crc_base, length_type crc_polynom>
+void Protocol<address_type, command_type, length_type, frame_size,
+                     crc_base, crc_polynom>::clear() noexcept
 {
     _data.reset();
     _packet_started = false;
@@ -166,8 +175,10 @@ void Protocol<address_type, command_type, length_type, frame_size>::clear() noex
     _length = 0;
 }
 
-template <typename address_type, typename command_type, typename length_type, std::size_t frame_size>
-Packet Protocol<address_type, command_type, length_type, frame_size>::unpack() noexcept
+template <typename address_type, typename command_type, typename length_type,
+          std::size_t frame_size, length_type crc_base, length_type crc_polynom>
+Packet Protocol<address_type, command_type, length_type, frame_size,
+                     crc_base, crc_polynom>::unpack() noexcept
 {
     Packet result;
 
@@ -181,20 +192,12 @@ Packet Protocol<address_type, command_type, length_type, frame_size>::unpack() n
     return result;
 }
 
-template <typename address_type, typename command_type, typename length_type, std::size_t frame_size>
-length_type Protocol<address_type, command_type, length_type, frame_size>::checksum(const byte_t data[], std::size_t size)
+template <typename address_type, typename command_type, typename length_type,
+          std::size_t frame_size, length_type crc_base, length_type crc_polynom>
+length_type Protocol<address_type, command_type, length_type, frame_size,
+                     crc_base, crc_polynom>::checksum(const byte_t data[], std::size_t size)
 {
-    return lib::crc::calc<length_type, 0xFF, 0x03>(data, size);
-
-    /*
-    uint8_t result = 0xFF;
-
-    for (std::size_t i = 0; i < size; ++i) {
-        result = _crc_table[result ^ data[i]];
-    }
-
-    return  result;
-    */
+    return lib::crc::calc<length_type, crc_base, crc_polynom>(data, size);
 }
 
 }
