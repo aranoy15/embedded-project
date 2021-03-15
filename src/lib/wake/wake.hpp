@@ -183,10 +183,15 @@ Packet Protocol<address_type, command_type, length_type, frame_size,
     Packet result;
 
     if (_packet_receive) {
-        result.set_address(_data[address_index]);
-        result.set_command(_data[command_index]);
-        result.set_length(_data[length_index]);
-        result.set_data(&_data[data_index]);
+        //result.set_address(_data.data()[address_index]);
+        //result.set_command(_data.data()[command_index]);
+        //result.set_length(_data.data()[length_index]);
+        //result.set_data(&_data.data()[data_index]);
+
+        result.set_address(*reinterpret_cast<address_type*>(_data.data()[address_index]));
+        result.set_address(*reinterpret_cast<command_type*>(_data.data()[command_index]));
+        result.set_address(*reinterpret_cast<length_type*>(_data.data()[length_index]));
+        result.set_address(*reinterpret_cast<uint8_t*>(_data.data()[data_index]));
     }
 
     return result;

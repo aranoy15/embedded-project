@@ -5,6 +5,7 @@
 #include <wake.hpp>
 
 using protocol_t = lib::wake::Protocol<uint8_t, uint8_t, uint8_t, 256, 0xFF, 0x8B>;
+using packet_t = lib::wake::Packet;
 
 int main(void)
 {
@@ -14,7 +15,6 @@ int main(void)
     bsp::os::init();
 
     bsp::os::time::time_t start = bsp::os::time::current();
-    const uint8_t data[] = "Ok receive\n";
 
     for (;;) {
         if ((bsp::os::time::current() - start) >= 500) {
@@ -27,10 +27,10 @@ int main(void)
                 uint8_t b = 0;
                 bsp::usb::read(b);
 
-                protocol_t::process(b);
+                if (protocol_t::process(b)) {
+                    packet_t packet = protocol_t::unpack();
+                }
             }
-
-            bsp::usb::send(data, sizeof(data));
         }
     }
 
