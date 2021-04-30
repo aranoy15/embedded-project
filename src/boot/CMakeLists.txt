@@ -9,7 +9,6 @@ target_include_directories(boot PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(boot PRIVATE 
     ${BOOT_LIBS}
-    LIB::WAKE
 )
 
 stm32_add_linker_script(boot PRIVATE 

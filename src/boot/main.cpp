@@ -2,10 +2,9 @@
 #include <bsp.hpp>
 #include <os.hpp>
 #include <cstring>
-#include <wake.hpp>
+#include <lib/buffers/liner_buffer.hpp>
+#include <lib/time/time.hpp>
 
-using protocol_t = lib::wake::Protocol<uint8_t, uint8_t, uint8_t, 256, 0xFF, 0x8B>;
-using packet_t = lib::wake::Packet;
 
 int main(void)
 {
@@ -16,21 +15,28 @@ int main(void)
 
     bsp::os::time::time_t start = bsp::os::time::current();
 
+    lib::buffers::liner_buffer<uint8_t, 256> temp_data;
+
     for (;;) {
         if ((bsp::os::time::current() - start) >= 500) {
             bsp::gpio::status::toggle();
             start = bsp::os::time::current();
         }
 
+        uint8_t status = static_cast<uint8_t>(bsp::usb::status());
+
         if (bsp::usb::count() > 0) {
             while (bsp::usb::count() > 0) {
                 uint8_t b = 0;
-                bsp::usb::read(b);
 
-                if (protocol_t::process(b)) {
-                    packet_t packet = protocol_t::unpack();
+                if (bsp::usb::read(b)) {
+                    temp_data.put(b);
                 }
             }
+
+            bsp::usb::send(temp_data.data(), temp_data.size());
+            bsp::usb::send(&status, 1);
+            temp_data.reset();
         }
     }
 

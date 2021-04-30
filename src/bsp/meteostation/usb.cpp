@@ -47,6 +47,12 @@ bool read(std::uint8_t& data)
 {
     return read(&data, 1);
 }
+
+status_t status()
+{
+    return csp::usb::status(main_number);
+}
+
 }
 
 namespace csp::usb

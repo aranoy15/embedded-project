@@ -138,6 +138,14 @@ int8_t cdc_transmit_fs(uint8_t* buffer, uint16_t size)
     USBD_CDC_SetTxBuffer(&hUsbDeviceFS, buffer, size);
     result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
 
+    std::uint32_t start = csp::tick::current();
+
+    while(hcdc->TxState == 1) {
+        if ((csp::tick::current() - start) > 2000) {
+            return USBD_FAIL;
+        }
+    }
+
     return result;
 }
 
@@ -187,6 +195,21 @@ void start_receive(Number)
 void stop_receive(Number)
 {
     need_receive_callback = false;
+}
+
+Status status(Number)
+{
+    switch (hUsbDeviceFS.dev_state) {
+        default:
+        case USBD_STATE_DEFAULT:
+            return Status::Default;
+        case USBD_STATE_ADDRESSED:
+            return Status::Addressed;
+        case USBD_STATE_CONFIGURED:
+            return Status::Configured;
+        case USBD_STATE_SUSPENDED:
+            return Status::Suspended;
+    }
 }
 
 __weak void receive_callback(Number, uint8_t*, std::size_t)
