@@ -204,6 +204,21 @@ void stop_receive(Number)
     need_receive_callback = false;
 }
 
+Status status(Number)
+{
+    switch (hUsbDeviceFS.dev_state) {
+        default:
+        case USBD_STATE_DEFAULT:
+            return Status::Default;
+        case USBD_STATE_ADDRESSED:
+            return Status::Addressed;
+        case USBD_STATE_CONFIGURED:
+            return Status::Configured;
+        case USBD_STATE_SUSPENDED:
+            return Status::Suspended;
+    }
+}
+
 __weak void receive_callback(Number, uint8_t data[], std::size_t size)
 {
     csp::error_callback(__FILE__, __LINE__);
