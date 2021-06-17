@@ -1,6 +1,6 @@
 set(STM32_CUBE_F4_PATH ${CMAKE_SOURCE_DIR}/toolchain/st/STM32CubeF4-1.25.2)
 
-find_package(CMSIS COMPONENTS STM32F4 REQUIRED)
+find_package(CMSIS COMPONENTS STM32F401CC REQUIRED)
 find_package(HAL COMPONENTS STM32F4 RCC GPIO CORTEX TIM UART USART PCD LL_USB REQUIRED)
 
 add_library(csp_f401xc_core INTERFACE)
@@ -25,6 +25,7 @@ target_link_libraries(csp_f401xc_core INTERFACE
     HAL::STM32::F4::GPIO
     CMSIS::STM32::F401xC
     STM32::NoSys
+    STM32::Nano
 )
 
 target_compile_definitions(csp_f401xc_core INTERFACE
