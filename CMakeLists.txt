@@ -8,7 +8,7 @@ else()
 
     set(CMAKE_CXX_STANDARD 20)
 
-    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/stm32-cmake/cmake/stm32_gcc.cmake)
+    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/cmake/stm32-cmake/cmake/stm32_gcc.cmake)
 
     project(embedded-project CXX C ASM)
 
