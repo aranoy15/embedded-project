@@ -5,6 +5,7 @@
 #include <lib/buffers/liner_buffer.hpp>
 #include <lib/time/time.hpp>
 
+#define loop while(true)
 
 int main(void)
 {
@@ -15,9 +16,9 @@ int main(void)
 
     bsp::os::time::time_t start = bsp::os::time::current();
 
-    lib::buffers::liner_buffer<uint8_t, 256> temp_data;
+    static lib::buffers::liner_buffer<uint8_t, 256> temp_data;
 
-    for (;;) {
+    loop {
         if ((bsp::os::time::current() - start) >= 500) {
             bsp::gpio::status::toggle();
             start = bsp::os::time::current();
