@@ -1,13 +1,13 @@
 #include <csp/share/csp.hpp>
 #include <hal.hpp>
 
+#include "usbd_cdc.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
-#include "usbd_cdc.h"
 
 USBD_HandleTypeDef hUsbDeviceFS;
 
-namespace 
+namespace
 {
 constexpr std::size_t rx_size = 256;
 constexpr std::size_t tx_size = 256;
@@ -130,7 +130,8 @@ int8_t cdc_transmit_fs(uint8_t* buffer, uint16_t size)
 {
     uint8_t result = USBD_OK;
 
-    USBD_CDC_HandleTypeDef* hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
+    USBD_CDC_HandleTypeDef* hcdc =
+        (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
     if (hcdc->TxState != 0) {
         return USBD_BUSY;
     }
@@ -140,7 +141,7 @@ int8_t cdc_transmit_fs(uint8_t* buffer, uint16_t size)
 
     std::uint32_t start = csp::tick::current();
 
-    while(hcdc->TxState == 1) {
+    while (hcdc->TxState == 1) {
         if ((csp::tick::current() - start) > 2000) {
             return USBD_FAIL;
         }
@@ -149,13 +150,9 @@ int8_t cdc_transmit_fs(uint8_t* buffer, uint16_t size)
     return result;
 }
 
-USBD_CDC_ItfTypeDef usbd_interface_fops_fs = {
-    cdc_init_fs,
-    cdc_deinit_fs,
-    cdc_control_fs,
-    cdc_receive_fs 
-};
-}
+USBD_CDC_ItfTypeDef usbd_interface_fops_fs = {cdc_init_fs, cdc_deinit_fs,
+                                              cdc_control_fs, cdc_receive_fs};
+}  // namespace
 
 namespace csp::usb
 {
@@ -163,6 +160,17 @@ namespace device::cdc
 {
     void init(Number)
     {
+        using dp_pin_t =
+            csp::gpio::Gpio<csp::gpio::Port::_A, csp::gpio::Pin::_12,
+                            csp::gpio::Mode::push_pull, csp::gpio::Speed::high,
+                            csp::gpio::Pullup::down>;
+
+        dp_pin_t::init();
+        dp_pin_t::on();
+        csp::tick::delay(100);
+        dp_pin_t::off();
+        csp::tick::delay(100);
+
         if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK) {
             csp::error_callback(__FILE__, __LINE__);
         }
@@ -171,7 +179,8 @@ namespace device::cdc
             csp::error_callback(__FILE__, __LINE__);
         }
 
-        if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &usbd_interface_fops_fs) != USBD_OK) {
+        if (USBD_CDC_RegisterInterface(&hUsbDeviceFS,
+                                       &usbd_interface_fops_fs) != USBD_OK) {
             csp::error_callback(__FILE__, __LINE__);
         }
 
