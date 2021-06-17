@@ -27,6 +27,7 @@ target_include_directories(bsp_usb INTERFACE
 target_link_libraries(bsp_usb INTERFACE
     CSP::${CHIP}::DEVICE::USB::CDC
     LIB::BUFFERS
+    LIB::DATA
     LIB::UTILS
 )
 
