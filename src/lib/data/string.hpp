@@ -28,6 +28,8 @@ namespace data
 
         std::size_t capacity() const noexcept { return length; }
         std::size_t size() const noexcept { return _size; }
+        std::size_t free() const noexcept { return length - _size; }
+
         bool is_full() const noexcept { return _size == length; }
         [[maybe_unused]] bool is_empty() const noexcept { return _size == 0; }
         void clear() noexcept { _size = 0; }
@@ -113,18 +115,24 @@ namespace data
     {
         std::size_t len = strlen(str);
 
-        for (std::size_t i = 0; i < len; ++i) {
-            append(str[i]);
-        }
+        std::size_t copy_size = free() < len ? free() : len;
+
+        memcpy(&_data[_size], str, copy_size);
+        _size += copy_size;
+
+        terminate();
     }
 
     template <std::size_t length>
     template <std::size_t append_length>
     void string<length>::append(string<append_length>& str) noexcept
     {
-        for (std::size_t i = 0; i < str.size(); ++i) {
-            append(str[i]);
-        }
+        std::size_t copy_size = free() < str.size() ? free() : str.size();
+
+        memcpy(&_data[_size], str.as_str(), copy_size);
+        _size += copy_size;
+
+        terminate();
     }
 
     template <std::size_t length>
@@ -148,6 +156,7 @@ namespace data
     auto string<length>::operator=(const char* str) noexcept -> string<length>&
     {
         std::size_t len = strlen(str);
+        copy(str, len);
         return *this;
     }
 }  // namespace data

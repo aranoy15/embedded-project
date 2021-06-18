@@ -14,6 +14,11 @@ TEST(string_test, create)
 
     EXPECT_EQ(str.capacity(), length) << "Capacity not equal length";
     EXPECT_EQ(str.size(), 0) << "Initial size not 0";
+
+    str.append('A');
+    str.append('B');
+
+    EXPECT_EQ(str.free(), 14) << "Error calculate free size";
 }
 
 TEST(string_test, copy)
@@ -26,18 +31,33 @@ TEST(string_test, copy)
 
         to_copy = from_copy;
 
-        EXPECT_STREQ(to_copy.as_str(), "AB");
+        EXPECT_STREQ(to_copy.as_str(), "AB") << "Error copy operator";
     }
 
     {
         string<4> from_copy = "AB";
         string<3> to_copy(from_copy);
 
-        EXPECT_STREQ(to_copy.as_str(), "AB");
+        EXPECT_STREQ(to_copy.as_str(), "AB")
+            << "Error copy constructor by string class";
     }
 
     {
+        const char* from_copy = "AB";
+        string<3> to_copy = "";
 
+        to_copy = from_copy;
+
+        EXPECT_STREQ(to_copy.as_str(), "AB")
+            << "Error copy operator for str";
+    }
+
+    {
+        const char* from_copy = "AB";
+        string<3> to_copy(from_copy);
+
+        EXPECT_STREQ(to_copy.as_str(), "AB")
+            << "Error copy constructor by str";
     }
 }
 
