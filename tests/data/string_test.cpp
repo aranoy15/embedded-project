@@ -100,3 +100,52 @@ TEST(string_test, append)
     EXPECT_EQ(data[1], 'F');
     EXPECT_EQ(data[2], '\0');
 }
+
+TEST(string_test, operators)
+{
+    using namespace lib::data;
+    const std::size_t size = 3;
+
+    {
+        string<size> data = "";
+        data = data + 'A';
+        data = data + 'B';
+
+        EXPECT_STREQ(data.as_str(), "AB");
+    }
+
+    {
+        string<size> data = "";
+        data = 'A' + data;
+        data = 'B' + data;
+
+        EXPECT_STREQ(data.as_str(), "AB");
+    }
+
+    {
+        string<size> data = "";
+        data = data + "A";
+        data = data + "B";
+
+        EXPECT_STREQ(data.as_str(), "AB");
+    }
+
+    {
+        string<size> data = "";
+        data = "A" + data;
+        data = "B" + data;
+
+        EXPECT_STREQ(data.as_str(), "AB");
+    }
+
+    {
+        string<size> data = "";
+        string<2> data_append_1 = "A";
+        string<2> data_append_2 = "B";
+
+        data = data + data_append_1;
+        data = data + data_append_2;
+
+        EXPECT_STREQ(data.as_str(), "AB");
+    }
+}

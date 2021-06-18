@@ -159,6 +159,45 @@ namespace data
         copy(str, len);
         return *this;
     }
+
+    template <std::size_t length>
+    auto operator+(string<length>& lhs, char rhs) noexcept -> string<length>&
+    {
+        lhs.append(rhs);
+        return lhs;
+    }
+
+    template <std::size_t length>
+    auto operator+(char lhs, string<length>& rhs) noexcept -> string<length>&
+    {
+        rhs.append(lhs);
+        return rhs;
+    }
+
+    template <std::size_t length>
+    auto operator+(string<length>& lhs, const char* rhs) noexcept
+        -> string<length>&
+    {
+        lhs.append(rhs);
+        return lhs;
+    }
+
+    template <std::size_t length>
+    auto operator+(const char* lhs, string<length>& rhs) noexcept
+        -> string<length>&
+    {
+        rhs.append(lhs);
+        return rhs;
+    }
+
+    template <std::size_t left_length, std::size_t right_length>
+    auto operator+(string<left_length>& lhs, string<right_length> rhs)
+        -> string<left_length>&
+    {
+        lhs.append(rhs);
+        return lhs;
+    }
+
 }  // namespace data
 }  // namespace lib
 
