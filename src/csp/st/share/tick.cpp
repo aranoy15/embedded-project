@@ -1,14 +1,14 @@
-#include <tick.hpp>
 #include <hal.hpp>
+#include <tick_template.hpp>
 
 namespace csp::tick
 {
-uint32_t current()
+tick_t current()
 {
     return HAL_GetTick();
 }
 
-void delay(uint32_t ms)
+void delay(tick_t ms)
 {
     HAL_Delay(ms);
 }

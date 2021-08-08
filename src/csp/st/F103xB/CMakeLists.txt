@@ -18,7 +18,9 @@ target_sources(csp_f103xb_core INTERFACE
 
 target_include_directories(csp_f103xb_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/config
     ${CMAKE_SOURCE_DIR}/src/csp/share
+
 )
 
 target_link_libraries(csp_f103xb_core INTERFACE
@@ -29,6 +31,7 @@ target_link_libraries(csp_f103xb_core INTERFACE
     HAL::STM32::F1::FLASH
     HAL::STM32::F1::FLASHEx
     CMSIS::STM32::F103xB
+    STM32::NoSys
     STM32::Nano
 )
 

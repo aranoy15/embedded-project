@@ -17,7 +17,7 @@ else()
     endif()
 
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-    include(BOARD/${BOARD})
+    include(boards/${BOARD})
 
     add_subdirectory(src)
 endif()

@@ -23,6 +23,7 @@ target_link_libraries(csp_f401xc_core INTERFACE
     HAL::STM32::F4::RCCEx
     HAL::STM32::F4::CORTEX
     HAL::STM32::F4::GPIO
+    HAL::STM32::F4::TIM
     CMSIS::STM32::F401xC
     STM32::NoSys
     STM32::Nano
@@ -36,9 +37,12 @@ target_compile_definitions(csp_f401xc_core INTERFACE
     -DHAL_EXTI_MODULE_ENABLED
     -DHAL_GPIO_MODULE_ENABLED
     -DHAL_PWR_MODULE_ENABLED
+    -DHAL_TIM_MODULE_ENABLED
     -DHAL_RCC_MODULE_ENABLED
 )
 
 add_library(CSP::F401xC::CORE ALIAS csp_f401xc_core)
 
 add_subdirectory(usb/cdc)
+add_subdirectory(tick_source)
+add_subdirectory(timer)

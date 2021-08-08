@@ -1,11 +1,6 @@
-#include <os/no_os/os.hpp>
+#include <os.hpp>
 
-namespace bsp::os
+bool os::init()
 {
-void init()
-{
-
+    return true;
 }
-}
-
-

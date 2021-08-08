@@ -5,7 +5,7 @@
 
 namespace lib::crc
 {
-template<typename base, std::uint8_t polynom, std::uint8_t init>
+template<typename base, std::uint8_t polynomial, std::uint8_t init>
 base calc(const std::uint8_t data[], std::size_t size)
 {
     base result = init;
@@ -15,7 +15,7 @@ base calc(const std::uint8_t data[], std::size_t size)
 
         for (std::uint8_t j = 0; j < 8; ++j) {
             result = (result & (1 << ((sizeof(base) * 8) - 1))) ? 
-                        (result << 1) & polynom :
+                        (result << 1) & polynomial :
                         result << 1;
         }
     }

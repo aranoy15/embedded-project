@@ -1,8 +1,7 @@
 #ifndef BSP_METEOSTATION_USB
 #define BSP_METEOSTATION_USB
 
-#include <csp/share/csp.hpp>
-#include <cinttypes>
+#include <csp.hpp>
 
 namespace bsp::usb
 {

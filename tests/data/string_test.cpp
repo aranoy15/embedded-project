@@ -210,6 +210,13 @@ TEST(string_test, contains)
     }
 
     {
+        string<32> data("Hello, world");
+        const char* word = "orld";
+
+        EXPECT_TRUE(data.contains(word));
+    }
+
+    {
         string<3> data("ABC");
         string<0> empty_data;
 

@@ -2,11 +2,16 @@
 
 #include <stm32f4xx_hal.h>
 
+extern uint32_t* g_pfnVectors;
+
 namespace csp
 {
 void init()
 {
-    HAL_Init(); 
+    __enable_irq();
+    SCB->VTOR = uint32_t(&g_pfnVectors);
+
+    HAL_Init();
 }
 
 }

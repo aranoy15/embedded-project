@@ -1,6 +1,5 @@
 #include <csp.hpp>
 #include <hal.hpp>
-#include <gpio.hpp>
 
 namespace
 {
@@ -22,23 +21,27 @@ void deinit_clk(Port port);
 def_t* port_to_def(Port port);
 Port def_to_port(def_t* def);
 uint32_t speed_parse(Speed speed);
+std::uint8_t gpio_get_alternate_function(csp::gpio::AlternateFunction function);
 
-void init(const GpioInfo& info)
+void init(const GpioInfo& info) noexcept
 {
     GPIO_InitTypeDef config;
 
     switch (info.mode) {
-        case Mode::push_pull:
+        case Mode::PushPull:
             config.Mode = GPIO_MODE_OUTPUT_PP;
             break;
-        case Mode::open_drain:
+        case Mode::OpenDrain:
             config.Mode = GPIO_MODE_OUTPUT_OD;
             break;
-        case Mode::input:
+        case Mode::Input:
             config.Mode = GPIO_MODE_INPUT;
             break;
+        case Mode::AlternateOpenDrain:
+            //config.MO
+            config.Mode = GPIO_MODE_AF_OD;
         default:
-        case Mode::analog:
+        case Mode::Analog:
             break;
     }
 
@@ -46,13 +49,13 @@ void init(const GpioInfo& info)
 
     switch (info.pullup) {
         default:
-        case Pullup::none:
+        case Pullup::None:
             config.Pull = GPIO_NOPULL;
             break;
-        case Pullup::up:
+        case Pullup::Up:
             config.Pull = GPIO_PULLUP;
             break;
-        case Pullup::down:
+        case Pullup::Down:
             config.Pull = GPIO_PULLDOWN;
             break;
     }
@@ -68,7 +71,7 @@ void init(const GpioInfo& info)
     HAL_GPIO_Init(port_res, &config);
 }
 
-void deinit(const GpioInfo& info)
+void deinit(const GpioInfo& info) noexcept
 {
     pin_t pin = pin_value(info);
     def_t* port = port_to_def(info.port);
@@ -80,7 +83,7 @@ void deinit(const GpioInfo& info)
     HAL_GPIO_DeInit(port, pin);
 }
 
-void on(const GpioInfo& info)
+void on(const GpioInfo& info) noexcept
 {
     pin_t pin = pin_value(info);
     def_t* port = port_to_def(info.port);
@@ -90,7 +93,7 @@ void on(const GpioInfo& info)
     HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
 }
 
-void off(const GpioInfo& info)
+void off(const GpioInfo& info) noexcept
 {
     pin_t pin = pin_value(info);
     def_t* port = port_to_def(info.port);
@@ -100,7 +103,7 @@ void off(const GpioInfo& info)
     HAL_GPIO_WritePin(port, pin, GPIO_PIN_RESET);
 }
 
-void toggle(const GpioInfo& info)
+void toggle(const GpioInfo& info) noexcept
 {
     pin_t pin = pin_value(info);
     def_t* port = port_to_def(info.port);
@@ -110,7 +113,7 @@ void toggle(const GpioInfo& info)
     HAL_GPIO_TogglePin(port, pin);
 }
 
-bool state(const GpioInfo& info)
+bool state(const GpioInfo& info) noexcept
 {
     pin_t pin = pin_value(info);
     def_t* port = port_to_def(info.port);

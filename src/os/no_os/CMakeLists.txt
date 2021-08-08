@@ -1,17 +1,20 @@
 
-add_library(bsp_os_no_os INTERFACE)
+add_library(os_no_os INTERFACE)
 
-target_sources(bsp_os_no_os INTERFACE
+target_sources(os_no_os INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/os.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/time.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/no_os_allocator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/task.cpp
+    ${CMAKE_SOURCE_DIR}/src/os/share/allocate.cpp
 )
 
-target_include_directories(bsp_os_no_os INTERFACE
+target_include_directories(os_no_os INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/src/os/share/
 )
 
-target_link_libraries(bsp_os_no_os INTERFACE
+target_link_libraries(os_no_os INTERFACE
     CSP::${CHIP}::CORE
 )
 
-add_library(BSP::NoOs ALIAS bsp_os_no_os)
+add_library(OS::NoOs ALIAS os_no_os)

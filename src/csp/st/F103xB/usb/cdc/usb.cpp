@@ -1,4 +1,4 @@
-#include <csp/share/csp.hpp>
+#include <csp.hpp>
 #include <hal.hpp>
 
 #include "usbd_cdc.h"
@@ -190,20 +190,10 @@ namespace device::cdc
     }
 }  // namespace device::cdc
 
-bool transmit(Number, uint8_t data[], std::size_t size)
+bool transmit(Number, const uint8_t data[], std::size_t size)
 {
-    cdc_transmit_fs(data, size);
+    cdc_transmit_fs(const_cast<uint8_t*>(data), size);
     return true;
-}
-
-void start_receive(Number)
-{
-    need_receive_callback = true;
-}
-
-void stop_receive(Number)
-{
-    need_receive_callback = false;
 }
 
 Status status(Number)

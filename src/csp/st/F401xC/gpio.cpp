@@ -9,6 +9,23 @@ using def_t = GPIO_TypeDef;
 }
 
 
+std::uint8_t gpio_get_alternate_function(csp::gpio::AlternateFunction function)
+{
+    using namespace csp::gpio;
+
+    if (function == AlternateFunction::None)
+        return 0xFF;
+    else if (function == AlternateFunction::Uart1)
+        return GPIO_AF7_USART1;
+    else if (function == AlternateFunction::Uart2)
+        return GPIO_AF7_USART2;
+    else if (function == AlternateFunction::I2c1)
+        return GPIO_AF4_I2C1;
+
+    return 0xFF;
+}
+
+
 namespace csp::gpio
 {
 void init_clk(Port port);
@@ -106,13 +123,13 @@ uint32_t speed_parse(Speed speed)
 {
     switch (speed) {
         default:
-        case Speed::low:
+        case Speed::Low:
             return GPIO_SPEED_FREQ_LOW;
-        case Speed::medium:
+        case Speed::Medium:
             return GPIO_SPEED_FREQ_MEDIUM;
-        case Speed::high:
+        case Speed::High:
             return GPIO_SPEED_FREQ_HIGH;
-        case Speed::very_high:
+        case Speed::VeryHigh:
             return GPIO_SPEED_FREQ_VERY_HIGH;
     }
 }

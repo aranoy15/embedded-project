@@ -1,4 +1,5 @@
 
+/*
 #include <bsp.hpp>
 #include <os.hpp>
 #include <lib/buffers/liner_buffer.hpp>
@@ -44,4 +45,48 @@ int main()
     }
 
     return 0;
+}
+*/
+
+#include <csp.hpp>
+#include <hal.hpp>
+
+const std::uint32_t app_address = 0x8004000;
+
+void jump_to_app()
+{
+    __disable_irq(); // запрещаем прерывания
+
+    SCB->VTOR = app_address;
+    auto int_vector_table = (uint32_t *)app_address;
+
+    typedef void (*ResetVectorFunc)();
+    auto reset_vector = (ResetVectorFunc)int_vector_table[1];
+
+
+    reset_vector();
+}
+
+using status_led = csp::gpio::Gpio<
+    csp::gpio::Port::_C,
+    csp::gpio::Pin::_13,
+    csp::gpio::Mode::PushPull>;
+
+int main()
+{
+    csp::init();
+    csp::rcc::init();
+
+    status_led::init();
+
+    status_led::toggle();
+    csp::tick::delay(1000);
+    status_led::toggle();
+    csp::tick::delay(1000);
+    status_led::toggle();
+    csp::tick::delay(1000);
+
+    jump_to_app();
+
+    while (true);
 }

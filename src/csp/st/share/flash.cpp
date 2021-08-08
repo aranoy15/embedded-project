@@ -1,4 +1,4 @@
-#include <flash.hpp>
+#include <flash_template.hpp>
 #include <hal.hpp>
 
 namespace csp::flash

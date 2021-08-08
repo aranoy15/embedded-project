@@ -1,5 +1,5 @@
-#include <uart.hpp>
 #include <stm32f1xx_hal.h>
+#include <uart_template.hpp>
 
 
 namespace csp::uart

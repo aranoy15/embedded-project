@@ -35,6 +35,7 @@
   * @brief This is the list of modules to be used in the HAL driver
   */
 
+
 /* ########################## HSE/HSI Values adaptation ##################### */
 /**
   * @brief Adjust the value of External High Speed oscillator (HSE) used in your application.

@@ -17,8 +17,6 @@ constexpr std::size_t tx_size = 256;
 uint8_t user_rx_buffer[rx_size];
 uint8_t user_tx_buffer[tx_size];
 
-bool need_receive_callback = false;
-
 USBD_CDC_LineCodingTypeDef linecoding =
 {
     115200, /* baud rate*/
@@ -118,9 +116,7 @@ int8_t cdc_control_fs(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 
 int8_t cdc_receive_fs(uint8_t* buffer, uint32_t* size)
 {
-    if (need_receive_callback) {
-        csp::usb::receive_callback(csp::usb::Number::_1, buffer, *size);
-    }
+    csp::usb::receive_callback(csp::usb::Number::_1, buffer, *size);
 
     USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &buffer[0]);
     USBD_CDC_ReceivePacket(&hUsbDeviceFS);
@@ -139,6 +135,13 @@ uint8_t cdc_transmit_fs(uint8_t* Buf, uint16_t Len)
 
     USBD_CDC_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
     result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
+
+    csp::tick::tick_t start = csp::tick::current();
+    while (hcdc->TxState == 1) {
+        if ((csp::tick::current() - start) > 2000) {
+            return USBD_FAIL;
+        }
+    }
 
     return result;
 }
@@ -189,19 +192,9 @@ namespace device::cdc
     }
 }  // namespace device::cdc
 
-bool transmit(Number, uint8_t data[], std::size_t size)
+bool transmit(Number, const uint8_t data[], std::size_t size)
 {
-    return cdc_transmit_fs(data, size) == USBD_OK;
-}
-
-void start_receive(Number)
-{
-    need_receive_callback = true;
-}
-
-void stop_receive(Number)
-{
-    need_receive_callback = false;
+    return cdc_transmit_fs(const_cast<std::uint8_t*>(data), size) == USBD_OK;
 }
 
 Status status(Number)

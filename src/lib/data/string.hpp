@@ -17,7 +17,7 @@ namespace data
     class string
     {
     public:
-        static const char TERMINATE = '\0';
+        static const char TERMINATOR = '\0';
 
     public:
         string() noexcept;
@@ -66,10 +66,13 @@ namespace data
         template <std::size_t copy_length>
         string& operator=(const string<copy_length>& other) noexcept;
         string& operator=(const char* str) noexcept;
+        char operator[](int index) const noexcept;
+        char operator[](std::size_t index) const noexcept;
         char& operator[](int index) noexcept;
+        char& operator[](std::size_t index) noexcept;
 
     private:
-        char _data[length];
+        char _data[length + sizeof(TERMINATOR)];
         std::size_t _size;
 
     private:
@@ -104,7 +107,7 @@ namespace data
     {
         if (is_full()) return;
 
-        _data[_size] = TERMINATE;
+        _data[_size] = TERMINATOR;
     }
 
     template <std::size_t length>
@@ -154,14 +157,35 @@ namespace data
     }
 
     template <std::size_t length>
-    char& string<length>::operator[](int index) noexcept
+    char string<length>::operator[](int index) const noexcept
     {
-        if (index < 0 or index > _size) return _data[0];
-
+        if (index < 0 or index >= _size) return _data[0];
         return _data[index];
     }
 
     template <std::size_t length>
+    char string<length>::operator[](std::size_t index) const noexcept
+    {
+        if (index >= _size) return _data[0];
+        return _data[index];
+    }
+
+    template <std::size_t length>
+    char& string<length>::operator[](int index) noexcept
+    {
+        if (index < 0 or index >= _size) return _data[0];
+        return _data[index];
+    }
+
+
+    template <std::size_t length>
+    char& string<length>::operator[](std::size_t index) noexcept
+    {
+        if (index >= _size) return _data[0];
+        return _data[index];
+    }
+
+template <std::size_t length>
     template <std::size_t copy_length>
     auto string<length>::operator=(const string<copy_length>& other) noexcept
         -> string<length>&
@@ -216,8 +240,8 @@ namespace data
         for (std::size_t i = 0; i < this->size(); ++i) {
             if (_data[i] == data[0]) {
                 if (this->size() >= (i + size))
-                    return strncmp(&_data[i], data, size) == 0;
-                else return false;
+                    if (strncmp(&_data[i], data, size) == 0)
+                        return true;
             }
         }
 

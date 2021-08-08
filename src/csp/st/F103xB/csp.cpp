@@ -1,4 +1,4 @@
-#include <csp/share/csp.hpp>
+#include <csp.hpp>
 
 #include <hal.hpp>
 

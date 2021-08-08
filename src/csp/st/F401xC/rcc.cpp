@@ -1,11 +1,6 @@
 #include <csp.hpp>
 #include <stm32f4xx_hal.h>
 
-void csp::rcc::increment_tick()
-{
-    HAL_IncTick();
-}
-
 void csp::rcc::init()
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -106,25 +101,4 @@ void SVC_Handler(void)
 void DebugMon_Handler(void)
 {
 }
-
-/**
-  * @brief This function handles Pendable request for system service.
-  */
-void PendSV_Handler(void)
-{
-}
-
-/**
-  * @brief This function handles System tick timer.
-  */
-void SysTick_Handler(void)
-{
-    csp::rcc::systick_handler();
-}
-
-}
-
-__weak void csp::rcc::systick_handler()
-{
-    error_callback(__FILE__, __LINE__);
 }
