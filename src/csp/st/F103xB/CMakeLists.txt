@@ -44,6 +44,7 @@ target_compile_definitions(csp_f103xb_core INTERFACE
     -DHAL_GPIO_MODULE_ENABLED
     -DHAL_PWR_MODULE_ENABLED
     -DHAL_RCC_MODULE_ENABLED
+    -DHAL_TIM_MODULE_ENABLED
 )
 
 add_library(CSP::F103xB::CORE ALIAS csp_f103xb_core)
@@ -72,3 +73,5 @@ target_compile_definitions(csp_uart INTERFACE
 add_library(CSP::UART ALIAS csp_uart)
 
 add_subdirectory(usb/cdc)
+add_subdirectory(timer)
+add_subdirectory(tick_source)

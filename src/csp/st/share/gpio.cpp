@@ -38,7 +38,6 @@ void init(const GpioInfo& info) noexcept
             config.Mode = GPIO_MODE_INPUT;
             break;
         case Mode::AlternateOpenDrain:
-            //config.MO
             config.Mode = GPIO_MODE_AF_OD;
         default:
         case Mode::Analog:

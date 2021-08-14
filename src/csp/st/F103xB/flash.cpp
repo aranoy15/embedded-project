@@ -1,4 +1,4 @@
-#include <csp/share/flash_template.hpp>
+#include <csp.hpp>
 #include <hal.hpp>
 
 namespace

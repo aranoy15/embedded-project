@@ -106,12 +106,12 @@ uint32_t speed_parse(Speed speed)
 {
     switch (speed) {
         default:
-        case Speed::low:
+        case Speed::Low:
             return GPIO_SPEED_FREQ_LOW;
-        case Speed::medium:
+        case Speed::Medium:
             return GPIO_SPEED_FREQ_MEDIUM;
-        case Speed::very_high:
-        case Speed::high:
+        case Speed::VeryHigh:
+        case Speed::High:
             return GPIO_SPEED_FREQ_HIGH;
     }
 }
