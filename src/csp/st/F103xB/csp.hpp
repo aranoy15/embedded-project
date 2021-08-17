@@ -13,5 +13,6 @@
 #include <uart_template.hpp>
 #include <usb_template.hpp>
 #include <timer_template.hpp>
+#include <i2c_template.hpp>
 
 #endif  // SRC_CSP_ST_F103XB_CSP_HPP

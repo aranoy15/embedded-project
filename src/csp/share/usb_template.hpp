@@ -21,6 +21,7 @@ enum class Status
 namespace device::cdc
 {
     void init(Number number);
+    void deinit(Number number);
 }  // namespace device::cdc
 
 bool transmit(Number number, const uint8_t data[], std::size_t size);

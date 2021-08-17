@@ -51,21 +51,7 @@ int main()
 #include <csp.hpp>
 #include <hal.hpp>
 
-const std::uint32_t app_address = 0x8004000;
-
-void jump_to_app()
-{
-    __disable_irq(); // запрещаем прерывания
-
-    SCB->VTOR = app_address;
-    auto int_vector_table = (uint32_t *)app_address;
-
-    typedef void (*ResetVectorFunc)();
-    auto reset_vector = (ResetVectorFunc)int_vector_table[1];
-
-
-    reset_vector();
-}
+const std::uint32_t app_address = 0x8006000;
 
 using status_led = csp::gpio::Gpio<
     csp::gpio::Port::_C,
@@ -74,19 +60,24 @@ using status_led = csp::gpio::Gpio<
 
 int main()
 {
+    const csp::usb::Number usb_number = csp::usb::Number::_1;
+
     csp::init();
     csp::rcc::init();
+    csp::usb::device::cdc::init(usb_number);
+
+    csp::tick::delay(5000);
+    csp::usb::transmit(usb_number, (const std::uint8_t*)"Start boot\r\n", 12);
 
     status_led::init();
 
-    status_led::toggle();
-    csp::tick::delay(1000);
-    status_led::toggle();
-    csp::tick::delay(1000);
-    status_led::toggle();
-    csp::tick::delay(1000);
+    for (int i = 0; i < 5; ++i) {
+        status_led::toggle();
+        csp::tick::delay(1000);
+    }
 
-    jump_to_app();
+    csp::usb::device::cdc::deinit(usb_number);
+    csp::jump_to(app_address);
 
     while (true);
 }

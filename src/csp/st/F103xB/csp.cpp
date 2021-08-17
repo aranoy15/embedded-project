@@ -1,11 +1,15 @@
 #include <csp.hpp>
-
 #include <hal.hpp>
+
+extern uint32_t* g_pfnVectors;
 
 namespace csp
 {
 void init()
 {
+    __enable_irq();
+    SCB->VTOR = uint32_t(&g_pfnVectors);
+
     HAL_Init(); 
 }
 

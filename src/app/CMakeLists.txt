@@ -16,6 +16,7 @@ target_link_libraries(${APP_TARGET} PRIVATE
         CSP::${CHIP}::TickSource::SysTick
         CSP::${CHIP}::DEVICE::USB::CDC
         CSP::${CHIP}::TIMER
+        CSP::${CHIP}::I2C
         OS::NoOs
         )
 
@@ -24,7 +25,7 @@ target_link_libraries(${APP_TARGET} PRIVATE
 #        )
 
 stm32_add_linker_script(${APP_TARGET} PRIVATE
-        ${CMAKE_SOURCE_DIR}/toolchain/linker/${PROVIDER}/${CHIP}/gcc/app/link.ld
+        ${CMAKE_SOURCE_DIR}/toolchain/linker/${PROVIDER}/${CHIP}/gcc/${APP_ADDRESS}.ld
         )
 
 add_custom_target(${APP_TARGET}.binhex ALL#TARGET ${APP_TARGET} ALL

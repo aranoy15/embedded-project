@@ -17,6 +17,8 @@ def_t* port_to_def(Port port);
 Port def_to_port(def_t* def);
 uint32_t speed_parse(Speed speed);
 
+void post_init(const GpioInfo& info, GPIO_InitTypeDef& config);
+
 void init_clk(csp::gpio::Port port)
 {
     switch (port) {
@@ -114,6 +116,12 @@ uint32_t speed_parse(Speed speed)
         case Speed::High:
             return GPIO_SPEED_FREQ_HIGH;
     }
+}
+
+void post_init(const GpioInfo& info, GPIO_InitTypeDef& config)
+{
+    (void)info;
+    (void)config;
 }
 
 }  // namespace csp::gpio

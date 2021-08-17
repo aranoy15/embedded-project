@@ -1,7 +1,7 @@
 set(STM32_CUBE_F1_PATH ${CMAKE_SOURCE_DIR}/toolchain/st/STM32CubeF1-1.8.3)
 
 find_package(CMSIS COMPONENTS STM32F103C8 REQUIRED)
-find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM FLASH UART USART PCD LL_USB REQUIRED)
+find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM FLASH UART USART PCD LL_USB I2C REQUIRED)
 
 
 add_library(csp_f103xb_core INTERFACE)
@@ -14,6 +14,7 @@ target_sources(csp_f103xb_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/../share/gpio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../share/tick.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../share/flash.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../share/csp.cpp
 )
 
 target_include_directories(csp_f103xb_core INTERFACE
@@ -45,6 +46,7 @@ target_compile_definitions(csp_f103xb_core INTERFACE
     -DHAL_PWR_MODULE_ENABLED
     -DHAL_RCC_MODULE_ENABLED
     -DHAL_TIM_MODULE_ENABLED
+    -DHAL_I2C_MODULE_ENABLED
 )
 
 add_library(CSP::F103xB::CORE ALIAS csp_f103xb_core)
@@ -75,3 +77,4 @@ add_library(CSP::UART ALIAS csp_uart)
 add_subdirectory(usb/cdc)
 add_subdirectory(timer)
 add_subdirectory(tick_source)
+add_subdirectory(i2c)

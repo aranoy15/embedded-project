@@ -25,9 +25,9 @@ bool csp::i2c::transmit(Number number, TransferMode transfer_mode, std::uint16_t
         csp::i2c::transmit_callback(number);
     } else if (transfer_mode == TransferMode::Interrupt) {
         result = HAL_I2C_Master_Transmit_IT(handler, address, const_cast<std::uint8_t*>(data), size);
-    } else if (transfer_mode == TransferMode::Dma) {
+    } /*else if (transfer_mode == TransferMode::Dma) {
         result = HAL_I2C_Master_Transmit_DMA(handler, address, const_cast<std::uint8_t*>(data), size);
-    }
+    }*/
 
     return result == HAL_OK;
 }
@@ -48,9 +48,9 @@ bool csp::i2c::receive(Number number, TransferMode transfer_mode, std::uint16_t 
         csp::i2c::receive_callback(number);
     } else if (transfer_mode == TransferMode::Interrupt) {
         result = HAL_I2C_Master_Receive_IT(handler, address, data, size);
-    } else if (transfer_mode == TransferMode::Dma) {
+    } /* else if (transfer_mode == TransferMode::Dma) {
         result = HAL_I2C_Master_Receive_DMA(handler, address, data, size);
-    }
+    }*/
 
     return result == HAL_OK;
 }

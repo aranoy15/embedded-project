@@ -13,6 +13,7 @@ pin_t pin_value(const csp::gpio::GpioInfo& info)
 using def_t = GPIO_TypeDef;
 }
 
+
 namespace csp::gpio
 {
 
@@ -21,7 +22,8 @@ void deinit_clk(Port port);
 def_t* port_to_def(Port port);
 Port def_to_port(def_t* def);
 uint32_t speed_parse(Speed speed);
-std::uint8_t gpio_get_alternate_function(csp::gpio::AlternateFunction function);
+//std::uint8_t gpio_get_alternate_function(csp::gpio::AlternateFunction function);
+void post_init(const GpioInfo& info, GPIO_InitTypeDef& config);
 
 void init(const GpioInfo& info) noexcept
 {
@@ -39,6 +41,10 @@ void init(const GpioInfo& info) noexcept
             break;
         case Mode::AlternateOpenDrain:
             config.Mode = GPIO_MODE_AF_OD;
+            break;
+        case Mode::AlternatePushPull:
+            config.Mode = GPIO_MODE_AF_PP;
+            break;
         default:
         case Mode::Analog:
             break;
@@ -58,6 +64,8 @@ void init(const GpioInfo& info) noexcept
             config.Pull = GPIO_PULLDOWN;
             break;
     }
+
+    post_init(info, config);
 
     config.Pin = pin_value(info);
 

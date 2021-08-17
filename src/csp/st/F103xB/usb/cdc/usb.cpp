@@ -162,8 +162,8 @@ namespace device::cdc
     {
         using dp_pin_t =
             csp::gpio::Gpio<csp::gpio::Port::_A, csp::gpio::Pin::_12,
-                            csp::gpio::Mode::push_pull, csp::gpio::Speed::high,
-                            csp::gpio::Pullup::down>;
+                            csp::gpio::Mode::PushPull, csp::gpio::Speed::High,
+                            csp::gpio::Pullup::Down>;
 
         dp_pin_t::init();
         dp_pin_t::on();
@@ -185,6 +185,14 @@ namespace device::cdc
         }
 
         if (USBD_Start(&hUsbDeviceFS) != USBD_OK) {
+            csp::error_callback(__FILE__, __LINE__);
+        }
+    }
+
+
+    void deinit(Number)
+    {
+        if (USBD_DeInit(&hUsbDeviceFS) != USBD_OK) {
             csp::error_callback(__FILE__, __LINE__);
         }
     }
