@@ -1,7 +1,7 @@
 set(STM32_CUBE_F1_PATH ${CMAKE_SOURCE_DIR}/toolchain/st/STM32CubeF1-1.8.3)
 
 find_package(CMSIS COMPONENTS STM32F103C8 REQUIRED)
-find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM FLASH UART USART PCD LL_USB I2C REQUIRED)
+find_package(HAL COMPONENTS STM32F1 RCC GPIO CORTEX TIM FLASH UART USART PCD LL_USB I2C DMA REQUIRED)
 
 
 add_library(csp_f103xb_core INTERFACE)
@@ -31,6 +31,7 @@ target_link_libraries(csp_f103xb_core INTERFACE
     HAL::STM32::F1::GPIO
     HAL::STM32::F1::FLASH
     HAL::STM32::F1::FLASHEx
+    HAL::STM32::F1::DMA
     CMSIS::STM32::F103xB
     STM32::NoSys
     STM32::Nano
@@ -47,6 +48,7 @@ target_compile_definitions(csp_f103xb_core INTERFACE
     -DHAL_RCC_MODULE_ENABLED
     -DHAL_TIM_MODULE_ENABLED
     -DHAL_I2C_MODULE_ENABLED
+    -DHAL_UART_MODULE_ENABLED
 )
 
 add_library(CSP::F103xB::CORE ALIAS csp_f103xb_core)
@@ -78,3 +80,4 @@ add_subdirectory(usb/cdc)
 add_subdirectory(timer)
 add_subdirectory(tick_source)
 add_subdirectory(i2c)
+add_subdirectory(uart)

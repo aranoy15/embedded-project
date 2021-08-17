@@ -17,6 +17,7 @@ target_link_libraries(${APP_TARGET} PRIVATE
         CSP::${CHIP}::DEVICE::USB::CDC
         CSP::${CHIP}::TIMER
         CSP::${CHIP}::I2C
+        CSP::${CHIP}::UART
         OS::NoOs
         )
 
