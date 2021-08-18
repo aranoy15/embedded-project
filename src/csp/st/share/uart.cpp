@@ -147,15 +147,14 @@ void uart_irq_handler(handler_t* huart)
     HAL_UART_IRQHandler(huart);
 
     if (RESET != __HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE)) {
-        __HAL_UART_CLEAR_FLAG(huart, UART_FLAG_IDLE);
-
         Number number = get_uart_number(huart);
 
         if (number != Number::None) {
             std::uint32_t size = huart->RxXferSize - huart->RxXferCount;
-            if (size > 0)
-                csp::uart::receive_callback(number, size);
+            if (size > 0) csp::uart::receive_callback(number, size);
         }
+
+        __HAL_UART_CLEAR_IDLEFLAG(huart);
     }
 }
 
