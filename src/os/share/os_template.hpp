@@ -8,6 +8,7 @@
 #include <cinttypes>
 #include <os_task_template.hpp>
 #include <type_traits>
+#include <os_hal.hpp>
 
 namespace os
 {
@@ -32,7 +33,10 @@ public:
 
     static bool init()
     {
-        if (not os::block_init(_heap, heap_size)) return false;
+        if constexpr (os::have_heap) {
+            if (not os::block_init(heap(), heap_size)) return false;
+        }
+
         if (not os::init()) return false;
 
         return true;
@@ -63,9 +67,17 @@ public:
     }
 
 private:
-    inline static std::uint8_t _heap[heap_size];
     inline static os::task::Task* _tasks[task_count];
     inline static std::size_t _tasks_count = 0;
+
+private:
+    static std::uint8_t* heap()
+    {
+        if constexpr (os::have_heap) {
+            static std::uint8_t _heap[heap_size];
+            return _heap;
+        } else return nullptr;
+    }
 };
 }
 

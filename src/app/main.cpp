@@ -3,9 +3,9 @@
 //
 
 #include <csp.hpp>
-#include <cstring>
-
 #include <os.hpp>
+
+using scheduler_t = os::Scheduler<15 * 1024, 5>;
 
 using status_led = csp::gpio::Gpio<
     csp::gpio::Port::_C,
@@ -46,32 +46,54 @@ void csp::uart::receive_callback(Number number, std::size_t size)
     csp::uart::receive(mhz_number, mhz_transfer_mode, receive_data, sizeof(receive_data));
 }
 
-
-void co2_test()
+class BlinkTask : public os::task::Task
 {
-    static std::uint8_t data[] = { 0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
+public:
+    BlinkTask()
+        : os::task::Task(os::task::Priority::Idle, 1024, 100)
+    {}
 
-    csp::uart::transmit(mhz_number, mhz_transfer_mode, data, sizeof(data));
-    os::task::delay(1000);
+    void setup() noexcept override
+    {
+        status_led::init();
+    }
 
-    csp::usb::transmit(usb_number, (const std::uint8_t*)"CO2 complete\r\n", 14);
-}
+    void loop() noexcept override
+    {
+        status_led::toggle();
+    }
 
-void loop()
+};
+
+class SensorTask : public os::task::Task
 {
-    static const char* data_to_send = "Hello, World\r\n";
-    csp::usb::transmit(usb_number, (const std::uint8_t*)data_to_send, (std::size_t)strlen(data_to_send));
-    status_led::toggle();
+public:
+    SensorTask()
+        : os::task::Task(os::task::Priority::High, 3 * 1024, 1000)
+    {}
 
-    std::uint8_t i2c_data_to_send = 0xD0;
-    std::uint8_t i2c_data_to_read = 0x00;
+    void setup() noexcept override
+    {
+        csp::i2c::init(i2c_number, i2c_mode);
 
-    csp::i2c::transmit(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_send, 1);
-    csp::i2c::receive(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_read, 1);
+        csp::uart::init(mhz_number, mhz_settings);
+        csp::uart::receive(mhz_number, mhz_transfer_mode, receive_data, sizeof(receive_data));
+        csp::uart::enable_interrupt(mhz_number);
+    }
 
-    co2_test();
+    void loop() noexcept override
+    {
+        static std::uint8_t data[] = { 0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
 
-    os::task::delay(100);
+        std::uint8_t i2c_data_to_send = 0xD0;
+        std::uint8_t i2c_data_to_read = 0x00;
+
+        csp::i2c::transmit(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_send, 1);
+        csp::i2c::receive(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_read, 1);
+
+        csp::usb::transmit(usb_number, receive_data, sizeof(receive_data));
+        csp::uart::transmit(mhz_number, mhz_transfer_mode, data, sizeof(data));
+    }
 };
 
 int main()
@@ -79,17 +101,10 @@ int main()
     csp::init();
     csp::rcc::init();
     csp::usb::device::cdc::init(usb_number);
-    csp::i2c::init(i2c_number, i2c_mode);
 
-    csp::uart::init(mhz_number, mhz_settings);
-    csp::uart::receive(mhz_number, mhz_transfer_mode, receive_data, sizeof(receive_data));
-    csp::uart::enable_interrupt(mhz_number);
+    scheduler_t::reg<BlinkTask>();
+    scheduler_t::reg<SensorTask>();
 
-    status_led::init();
-
-    os::init();
-
-    while(true) {
-        loop();
-    }
+    scheduler_t::init();
+    scheduler_t::start();
 }

@@ -9,6 +9,8 @@
 
 namespace os
 {
+constexpr bool have_heap = false;
+
 namespace task
 {
 using id_t = int32_t;
