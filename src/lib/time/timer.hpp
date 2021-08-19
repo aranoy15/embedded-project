@@ -10,7 +10,7 @@ class Timer
 public:
     Timer() : _start_time(), _is_started(false) {}
 
-    bool is_started() const { return _is_started; }
+    [[nodiscard]] bool is_started() const { return _is_started; }
 
     void start();
     void restart();

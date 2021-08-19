@@ -9,6 +9,7 @@
 #include <os_task_template.hpp>
 #include <type_traits>
 #include <os_hal.hpp>
+#include <utility>
 
 namespace os
 {

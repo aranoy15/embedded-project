@@ -5,6 +5,12 @@
 #include <csp.hpp>
 #include <os.hpp>
 
+#include <lib/data/queue.hpp>
+#include <lib/data/string.hpp>
+#include <lib/data/vector.hpp>
+#include <lib/stream/writer.hpp>
+#include <lib/stream/actions.hpp>
+
 using scheduler_t = os::Scheduler<15 * 1024, 5>;
 
 using status_led = csp::gpio::Gpio<
@@ -46,6 +52,20 @@ void csp::uart::receive_callback(Number number, std::size_t size)
     csp::uart::receive(mhz_number, mhz_transfer_mode, receive_data, sizeof(receive_data));
 }
 
+class LogStream : public lib::stream::Writer
+{
+public:
+    LogStream() = default;
+    virtual ~LogStream() = default;
+
+    void write(std::uint8_t data) override
+    {
+        csp::usb::transmit(usb_number, &data, sizeof(data));
+    }
+
+    void flush() override {}
+};
+
 class BlinkTask : public os::task::Task
 {
 public:
@@ -62,7 +82,6 @@ public:
     {
         status_led::toggle();
     }
-
 };
 
 class SensorTask : public os::task::Task
@@ -91,7 +110,15 @@ public:
         csp::i2c::transmit(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_send, 1);
         csp::i2c::receive(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_read, 1);
 
-        csp::usb::transmit(usb_number, receive_data, sizeof(receive_data));
+        std::uint16_t co2_value = (receive_data[2] << 8) | receive_data[3];
+
+        using endl = lib::stream::actions::endl;
+
+        float f_data = 13.27f;
+
+        LogStream() << "CO2 concentration: " << co2_value << endl();
+        LogStream() << "Float test: " << f_data << endl();
+
         csp::uart::transmit(mhz_number, mhz_transfer_mode, data, sizeof(data));
     }
 };
