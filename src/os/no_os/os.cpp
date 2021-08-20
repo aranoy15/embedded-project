@@ -15,9 +15,9 @@ namespace
         while (::is_started) {
             for (auto item : tasks_list) {
                 if (item->timeout() > 0) {
-                    if (os::task::tick() - item->start_tick() >= item->timeout()) {
+                    if (os::task::current_tick() - item->start_tick() >= item->timeout()) {
                         item->loop();
-                        item->start_tick() = os::task::tick();
+                        item->start_tick() = os::task::current_tick();
                     }
                 } else item->loop();
             }

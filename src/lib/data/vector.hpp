@@ -18,7 +18,7 @@ public:
     using const_iterator = const T*;
 
 public:
-    vector();
+    vector() noexcept;
     ~vector() = default;
 
     [[nodiscard]] std::size_t size() const { return _size; }
@@ -41,7 +41,7 @@ private:
 };
 
 template <typename T, std::size_t length>
-vector<T, length>::vector() : _data(), _size(0)
+vector<T, length>::vector() noexcept : _data(), _size(0)
 {
 }
 

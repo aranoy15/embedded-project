@@ -25,6 +25,7 @@ public:
         Oct = 8,
         Bin = 2
     };
+
 public:
      Writer() = default;
      virtual ~Writer() = default;

@@ -15,8 +15,6 @@ constexpr std::size_t tx_size = 256;
 uint8_t user_rx_buffer[rx_size];
 uint8_t user_tx_buffer[tx_size];
 
-bool need_receive_callback = false;
-
 USBD_CDC_LineCodingTypeDef linecoding = {
     115200, /* baud rate*/
     0x00, /* stop bits-1*/
@@ -117,9 +115,7 @@ int8_t cdc_control_fs(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 
 int8_t cdc_receive_fs(uint8_t* buffer, uint32_t* size)
 {
-    if (need_receive_callback) {
-        csp::usb::receive_callback(csp::usb::Number::_1, buffer, *size);
-    }
+    csp::usb::receive_callback(csp::usb::Number::_1, buffer, *size);
 
     USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &buffer[0]);
     USBD_CDC_ReceivePacket(&hUsbDeviceFS);
@@ -130,8 +126,7 @@ int8_t cdc_transmit_fs(uint8_t* buffer, uint16_t size)
 {
     uint8_t result = USBD_OK;
 
-    USBD_CDC_HandleTypeDef* hcdc =
-        (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
+    auto hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
     if (hcdc->TxState != 0) {
         return USBD_BUSY;
     }

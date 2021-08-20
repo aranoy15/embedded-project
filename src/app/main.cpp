@@ -10,6 +10,7 @@
 #include <lib/data/vector.hpp>
 #include <lib/stream/writer.hpp>
 #include <lib/stream/actions.hpp>
+#include <lib/stream/reader.hpp>
 
 using scheduler_t = os::Scheduler<15 * 1024, 5>;
 
@@ -38,6 +39,9 @@ const std::uint16_t bme280_address = 0x76;
 static std::uint8_t receive_data[16] = { 0x00 };
 static std::size_t receive_size = 0;
 
+using queue_t = lib::data::queue<std::uint8_t, 1024>;
+static queue_t log_queue;
+
 void csp::uart::transmit_callback(Number number)
 {
     if (number != mhz_number) return;
@@ -52,11 +56,42 @@ void csp::uart::receive_callback(Number number, std::size_t size)
     csp::uart::receive(mhz_number, mhz_transfer_mode, receive_data, sizeof(receive_data));
 }
 
-class LogStream : public lib::stream::Writer
+void csp::usb::receive_callback(Number number, uint8_t data[], std::size_t size)
+{
+    if (number != usb_number) return;
+
+    for (std::size_t i = 0; i < size; ++i)
+        log_queue.push(data[i]);
+}
+
+class LogStream : public lib::stream::Writer,
+                  public lib::stream::Reader
 {
 public:
-    LogStream() = default;
+    LogStream() : Writer(), Reader() { set_timeout(0); }
     virtual ~LogStream() = default;
+
+    int available() override
+    {
+        return static_cast<int>(log_queue.size());
+    }
+
+    int read() override
+    {
+        if (log_queue.empty()) return -1;
+        return log_queue.pop();
+    }
+
+    int peek() override
+    {
+        if (log_queue.empty()) return -1;
+
+        std::uint8_t result = 0;
+        if (not log_queue.peek(result))
+            return -1;
+
+        return result;
+    }
 
     void write(std::uint8_t data) override
     {
@@ -70,7 +105,7 @@ class BlinkTask : public os::task::Task
 {
 public:
     BlinkTask()
-        : os::task::Task(os::task::Priority::Idle, 1024, 100)
+        : os::task::Task(os::task::Priority::Idle, 1024, 1000)
     {}
 
     void setup() noexcept override
@@ -81,6 +116,10 @@ public:
     void loop() noexcept override
     {
         status_led::toggle();
+
+        std::uint32_t read_int = 0;
+        LogStream() >> read_int;
+        LogStream() << "Read int: " << read_int << lib::stream::actions::endl();
     }
 };
 

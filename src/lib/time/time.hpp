@@ -21,7 +21,7 @@ public:
     Time(const Time& t) = default;
     Time& operator=(const Time& t) = default;
 
-    static time_t current() { return os::task::tick(); }
+    static time_t current() { return os::task::current_tick(); }
 
     static Time milliseconds(time_t msecs) { return Time(msecs); }
     static Time seconds(time_t s) { return Time(s * milliseconds_in_second); }

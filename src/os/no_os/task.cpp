@@ -5,7 +5,7 @@
 #include <os.hpp>
 #include <csp.hpp>
 
-auto os::task::tick() -> tick_t
+auto os::task::current_tick() -> tick_t
 {
     return csp::tick::current();
 }

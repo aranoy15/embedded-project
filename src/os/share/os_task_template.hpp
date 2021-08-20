@@ -22,7 +22,7 @@ enum class Priority
 
 using tick_t = std::uint32_t;
 
-tick_t tick();
+tick_t current_tick();
 void delay(tick_t ms);
 void yield();
 
