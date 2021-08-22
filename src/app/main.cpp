@@ -143,12 +143,6 @@ public:
     {
         static std::uint8_t data[] = { 0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
 
-        std::uint8_t i2c_data_to_send = 0xD0;
-        std::uint8_t i2c_data_to_read = 0x00;
-
-        csp::i2c::transmit(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_send, 1);
-        csp::i2c::receive(i2c_number, i2c_transfer_mode, bme280_address, &i2c_data_to_read, 1);
-
         std::uint16_t co2_value = (receive_data[2] << 8) | receive_data[3];
 
         using endl = lib::stream::actions::endl;
@@ -159,6 +153,25 @@ public:
         LogStream() << "Float test: " << f_data << endl();
 
         csp::uart::transmit(mhz_number, mhz_transfer_mode, data, sizeof(data));
+
+        i2c_scanner();
+    }
+
+private:
+    static void i2c_scanner()
+    {
+        using namespace lib::stream::actions;
+
+        std::size_t count = 0;
+        for (std::uint16_t i = 0; i < 128; ++i) {
+            if (csp::i2c::is_device_ready(i2c_number, i)) {
+                count++;
+                LogStream() << int_base(int_base::integer_base_t::Hex) << "Ok I2C address: 0x" << i << endl();
+            }
+        }
+
+        if (count == 0)
+            LogStream() << "Not found any devices" << endl();
     }
 };
 

@@ -29,6 +29,7 @@ enum class TransferMode {
 };
 
 bool init(Number number, Mode mode);
+bool is_device_ready(Number number, std::uint16_t address);
 bool transmit(Number number, TransferMode transfer_mode, std::uint16_t address, const std::uint8_t data[],
               std::size_t size);
 bool enable_interrupt(Number number);

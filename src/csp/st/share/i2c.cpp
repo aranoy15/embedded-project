@@ -74,6 +74,21 @@ bool csp::i2c::abort_transmit(Number number, TransferMode transfer_mode, std::ui
     return result == HAL_OK;
 }
 
+bool csp::i2c::is_device_ready(Number number, std::uint16_t address)
+{
+    auto handler = get_i2c_handler(number);
+
+    if (handler == nullptr) return false;
+
+    address = (std::uint16_t)(address << 1);
+
+    HAL_StatusTypeDef result = HAL_ERROR;
+
+    HAL_I2C_IsDeviceReady(handler, address, 3, 5);
+
+    return result == HAL_OK;
+}
+
 bool csp::i2c::abort_receive(Number number, TransferMode transfer_mode, std::uint16_t address)
 {
     return csp::i2c::abort_transmit(number, transfer_mode, address);

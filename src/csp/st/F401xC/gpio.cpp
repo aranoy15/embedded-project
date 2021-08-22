@@ -134,4 +134,19 @@ uint32_t speed_parse(Speed speed)
     }
 }
 
+void post_init(const GpioInfo& info, GPIO_InitTypeDef& config)
+{
+    if (info.mode == Mode::AlternatePushPull or
+        info.mode == Mode::AlternateOpenDrain) {
+
+        if (info.alternate == AlternateFunction::I2c1) {
+            config.Alternate = GPIO_AF4_I2C1;
+        } else if (info.alternate == AlternateFunction::Uart1) {
+            config.Alternate = GPIO_AF7_USART1;
+        } else if (info.alternate == AlternateFunction::Uart2) {
+            config.Alternate = GPIO_AF7_USART2;
+        }
+    }
+}
+
 }  // namespace csp::gpio
