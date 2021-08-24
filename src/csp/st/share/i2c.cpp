@@ -84,7 +84,7 @@ bool csp::i2c::is_device_ready(Number number, std::uint16_t address)
 
     HAL_StatusTypeDef result = HAL_ERROR;
 
-    HAL_I2C_IsDeviceReady(handler, address, 3, 5);
+    result = HAL_I2C_IsDeviceReady(handler, address, 3, 5);
 
     return result == HAL_OK;
 }
