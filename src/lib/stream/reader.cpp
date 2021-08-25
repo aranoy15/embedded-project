@@ -115,6 +115,7 @@ std::size_t lib::stream::Reader::read_bytes_until(std::uint8_t terminator,
 
     return count;
 }
+
 std::int64_t lib::stream::Reader::parse_int(
     lib::stream::Reader::LookaheadMode lookahead, char ignore)
 {

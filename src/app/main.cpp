@@ -105,7 +105,7 @@ class BlinkTask : public os::task::Task
 {
 public:
     BlinkTask()
-        : os::task::Task(os::task::Priority::Idle, 1024, 1000)
+        : os::task::Task(os::task::Priority::Idle, 1024, 100)
     {}
 
     void setup() noexcept override
@@ -116,10 +116,15 @@ public:
     void loop() noexcept override
     {
         status_led::toggle();
+        LogStream stream;
+        static lib::data::string<128> input_str;
 
-        std::uint32_t read_int = 0;
-        LogStream() >> read_int;
-        LogStream() << "Read int: " << read_int << lib::stream::actions::endl();
+        stream >> input_str;
+
+        if (not input_str.empty()) {
+            stream << "Receive: " << input_str << lib::stream::actions::endl();
+            input_str.clear();
+        }
     }
 };
 
@@ -164,6 +169,7 @@ private:
 
         std::size_t count = 0;
         for (std::uint16_t i = 0; i < 128; ++i) {
+            //LogStream() << int_base(int_base::integer_base_t::Hex) << "Check i2c address: 0x" << i << endl();
             if (csp::i2c::is_device_ready(i2c_number, i)) {
                 count++;
                 LogStream() << int_base(int_base::integer_base_t::Hex) << "Ok I2C address: 0x" << i << endl();

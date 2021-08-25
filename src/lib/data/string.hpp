@@ -7,6 +7,9 @@
 
 #include <cinttypes>
 #include <cstring>
+#include <cmath>
+#include <lib/stream/reader.hpp>
+#include <lib/stream/writer.hpp>
 
 namespace lib::data
 {
@@ -31,8 +34,8 @@ public:
     [[nodiscard]] std::size_t size() const noexcept { return _size; }
     [[nodiscard]] std::size_t free() const noexcept { return length - _size; }
 
-    [[nodiscard]] bool is_full() const noexcept { return _size == length; }
-    [[nodiscard]] bool is_empty() const noexcept { return _size == 0; }
+    [[nodiscard]] bool full() const noexcept { return _size == length; }
+    [[nodiscard]] bool empty() const noexcept { return _size == 0; }
     void clear() noexcept { _size = 0; }
 
     [[nodiscard]] const char* as_str() const noexcept { return _data; }
@@ -116,7 +119,7 @@ string<length>::string(const string<copy_length>& other) noexcept : _data(),
 template <std::size_t length>
 void string<length>::terminate() noexcept
 {
-    if (is_full()) return;
+    if (full()) return;
 
     _data[_size] = TERMINATOR;
 }
@@ -135,7 +138,7 @@ void string<length>::copy(const char* data, std::size_t size) noexcept
 template <std::size_t length>
 void string<length>::append(char ch) noexcept
 {
-    if (is_full()) return;
+    if (full()) return;
 
     _data[_size++] = ch;
 
@@ -215,14 +218,14 @@ auto string<length>::operator=(const char* str) noexcept -> string<length>&
 template <std::size_t length>
 bool string<length>::starts_with(char ch) noexcept
 {
-    if (is_empty()) return false;
+    if (empty()) return false;
 
     return _data[0] == ch;
 }
 template <std::size_t length>
 bool string<length>::starts_with(const char* str) noexcept
 {
-    if (is_empty()) return false;
+    if (empty()) return false;
 
     std::size_t len = strlen(str);
 
@@ -234,7 +237,7 @@ template <std::size_t length>
 template <std::size_t starts_length>
 bool string<length>::starts_with(const string<starts_length>& str) noexcept
 {
-    if (is_empty() or str.is_empty()) return false;
+    if (empty() or str.empty()) return false;
 
     return strncmp(as_str(), str.as_str(), str.size()) == 0;
 }
@@ -246,7 +249,7 @@ bool string<length>::contains(char ch) noexcept
 template <std::size_t length>
 bool string<length>::contains(const char* data, std::size_t size) noexcept
 {
-    if (size == 0 or is_empty()) return false;
+    if (size == 0 or empty()) return false;
 
     for (std::size_t i = 0; i < this->size(); ++i) {
         if (_data[i] == data[0]) {
@@ -263,7 +266,7 @@ bool string<length>::contains(const char* str) noexcept
 {
     std::size_t len = strlen(str);
 
-    if (len == 0 or is_empty()) return false;
+    if (len == 0 or empty()) return false;
 
     return contains(str, len);
 }
@@ -271,14 +274,14 @@ template <std::size_t length>
 template <std::size_t contains_length>
 bool string<length>::contains(const string<contains_length>& str) noexcept
 {
-    if (str.is_empty() or is_empty()) return false;
+    if (str.empty() or empty()) return false;
 
     return contains(str.as_str(), str.size());
 }
 template <std::size_t length>
 void string<length>::erase(std::size_t start, std::size_t size) noexcept
 {
-    if (is_empty() or start >= this->size()) return;
+    if (empty() or start >= this->size()) return;
 
     size_t end_index = start + size;
 
@@ -296,7 +299,7 @@ void string<length>::erase(std::size_t start, std::size_t size) noexcept
 template <std::size_t length>
 bool string<length>::equal(char ch) noexcept
 {
-    if (is_empty() or size() > 1) return false;
+    if (empty() or size() > 1) return false;
 
     return _data[0] == ch;
 }
@@ -306,7 +309,7 @@ bool string<length>::equal(const char* str) noexcept
 {
     std::size_t len = strlen(str);
 
-    if (len == 0 and is_empty()) return true;
+    if (len == 0 and empty()) return true;
 
     return strcmp(as_str(), str) == 0;
 }
@@ -315,7 +318,7 @@ template<std::size_t length>
 template<std::size_t equal_length>
 bool string<length>::equal(const string<equal_length>& str) noexcept
 {
-    if (str.is_empty() and is_empty()) return true;
+    if (str.empty() and empty()) return true;
 
     return strcmp(as_str(), str.as_str()) == 0;
 }
@@ -388,7 +391,7 @@ int string<length>::last_index_of(const char* str, std::size_t from_index)
     if (str == nullptr) return -1;
     std::size_t str_length = strlen(str);
 
-    if (str_length == 0 or is_empty() or str_length > size()) return -1;
+    if (str_length == 0 or empty() or str_length > size()) return -1;
 
     int found = -1;
 
@@ -476,6 +479,33 @@ bool operator==(string<left_length>& lhs,
     return lhs.equal(rhs);
 }
 
+
 }  // namespace lib::data
+
+template<std::size_t length>
+inline lib::stream::Reader& operator>>(lib::stream::Reader& stream, lib::data::string<length>& data)
+{
+    if (stream.available() <= 0 or length == 0)
+        return stream;
+
+    size_t read_size = std::min((std::size_t)stream.available(), data.capacity());
+
+    do {
+        auto symbol = static_cast<char>(stream.read());
+        data.append(symbol);
+        read_size--;
+    } while (read_size > 0);
+
+    return stream;
+}
+
+template<std::size_t length>
+inline lib::stream::Writer& operator<<(lib::stream::Writer& stream, lib::data::string<length>& data)
+{
+    for (char symbol : data)
+        stream.write(static_cast<std::uint8_t>(symbol));
+
+    return stream;
+}
 
 #endif  // EMBEDDED_PROJECT_STRING_HPP
