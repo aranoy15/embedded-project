@@ -1,24 +1,6 @@
-//
-// Created by afedoseev on 20.08.2021.
-//
-
-
 #include <lib/stream/reader.hpp>
-#include <lib/stream/actions.hpp>
 
-auto lib::stream::Reader::operator>>(actions::base_reader& action) -> Reader&
-{
-    action.action(*this);
-    return *this;
-}
-
-auto lib::stream::Reader::operator>>(actions::base_reader&& action) -> Reader&
-{
-    action.action(*this);
-    return *this;
-}
-
-int lib::stream::Reader::timed_read()
+int lib::stream::IInput::timed_read()
 {
     int result = -1;
 
@@ -32,7 +14,7 @@ int lib::stream::Reader::timed_read()
     return -1;
 }
 
-int lib::stream::Reader::timed_peek()
+int lib::stream::IInput::timed_peek()
 {
     int result = -1;
 
@@ -46,7 +28,7 @@ int lib::stream::Reader::timed_peek()
     return -1;
 }
 
-int lib::stream::Reader::peek_next_digit(LookaheadMode lookahead,
+int lib::stream::IInput::peek_next_digit(LookaheadMode lookahead,
                                          bool detect_decimal)
 {
     int result;
@@ -79,7 +61,7 @@ int lib::stream::Reader::peek_next_digit(LookaheadMode lookahead,
     }
 }
 
-std::size_t lib::stream::Reader::read_bytes(std::uint8_t* buffer,
+std::size_t lib::stream::IInput::read_bytes(std::uint8_t* buffer,
                                             std::size_t size)
 {
     std::size_t count = 0;
@@ -94,7 +76,7 @@ std::size_t lib::stream::Reader::read_bytes(std::uint8_t* buffer,
     return count;
 }
 
-std::size_t lib::stream::Reader::read_bytes_until(std::uint8_t terminator,
+std::size_t lib::stream::IInput::read_bytes_until(std::uint8_t terminator,
                                                   std::uint8_t* buffer,
                                                   std::size_t size)
 {
@@ -110,8 +92,7 @@ std::size_t lib::stream::Reader::read_bytes_until(std::uint8_t terminator,
     return count;
 }
 
-std::int64_t lib::stream::Reader::parse_int(
-    lib::stream::Reader::LookaheadMode lookahead, char ignore)
+std::int64_t lib::stream::IInput::parse_int(LookaheadMode lookahead, char ignore)
 {
     bool is_negative = false;
     std::int64_t result = 0;
@@ -140,7 +121,7 @@ std::int64_t lib::stream::Reader::parse_int(
     return result;
 }
 
-float lib::stream::Reader::parse_float(LookaheadMode lookahead, char ignore)
+float lib::stream::IInput::parse_float(LookaheadMode lookahead, char ignore)
 {
     bool is_negative = false;
     bool is_fraction = false;
@@ -177,13 +158,13 @@ float lib::stream::Reader::parse_float(LookaheadMode lookahead, char ignore)
         return static_cast<float>(result);
 }
 
-auto lib::stream::Reader::operator>>(int32_t& data) -> Reader&
+auto lib::stream::IInput::operator>>(int32_t& data) -> IInput&
 {
     data = (int32_t)parse_int(_lookahead_mode, ' ');
     return *this;
 }
 
-auto lib::stream::Reader::operator>>(uint32_t& data) -> Reader&
+auto lib::stream::IInput::operator>>(uint32_t& data) -> IInput&
 {
     data = (uint32_t)parse_int(_lookahead_mode, ' ');
     return *this;

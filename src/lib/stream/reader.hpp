@@ -1,7 +1,3 @@
-//
-// Created by afedoseev on 20.08.2021.
-//
-
 #ifndef EMBEDDED_PROJECT_STREAM_READER_HPP
 #define EMBEDDED_PROJECT_STREAM_READER_HPP
 
@@ -10,12 +6,7 @@
 namespace lib::stream
 {
 
-namespace actions
-{
-struct base_reader;
-}
-
-class Reader
+class IInput
 {
 public:
     using tick_t = os::task::tick_t;
@@ -37,22 +28,18 @@ public:
     };
 
 public:
-    Reader() = default;
-    virtual ~Reader() = default;
+    virtual ~IInput() = default;
 
     virtual int available() = 0;
     virtual int read() = 0;
     virtual int peek() = 0;
 
-    Reader& operator>>(actions::base_reader& action);
-    Reader& operator>>(actions::base_reader&& action);
-
-    Reader& operator>>(std::uint8_t& data);
-    Reader& operator>>(std::int8_t& data);
-    Reader& operator>>(std::uint16_t& data);
-    Reader& operator>>(std::int16_t& data);
-    Reader& operator>>(std::uint32_t& data);
-    Reader& operator>>(std::int32_t& data);
+    IInput& operator>>(std::uint8_t& data);
+    IInput& operator>>(std::int8_t& data);
+    IInput& operator>>(std::uint16_t& data);
+    IInput& operator>>(std::int16_t& data);
+    IInput& operator>>(std::uint32_t& data);
+    IInput& operator>>(std::int32_t& data);
 
     void set_timeout(tick_t timeout) { _timeout = timeout; }
     [[nodiscard]] tick_t timeout() const { return _timeout; }

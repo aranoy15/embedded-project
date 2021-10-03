@@ -2,24 +2,18 @@
 // Created by afedoseev on 19.08.2021.
 //
 
-#ifndef EMBEDDED_PROJECT_STREAM_WRITTER_HPP
-#define EMBEDDED_PROJECT_STREAM_WRITTER_HPP
+#ifndef SRC_LIB_STREAM_WRITER
+#define SRC_LIB_STREAM_WRITER
 
 #include <cinttypes>
 
 namespace lib::stream
 {
-
-namespace actions
-{
-    struct base_writer;
-}
-
-class Writer
+class IOutput
 {
 
 public:
-    using function_ptr = void(*)(Writer&);
+    using function_ptr = void(*)(IOutput&);
 
 public:
     enum class IntegerBase : std::uint8_t
@@ -39,34 +33,30 @@ public:
     };
 
 public:
-    Writer() = default;
-    virtual ~Writer() = default;
+    virtual ~IOutput() = default;
 
     virtual void write(std::uint8_t data) = 0;
     virtual void flush() = 0;
 
-    Writer& operator<<(std::uint8_t data);
-    Writer& operator<<(std::int8_t data);
-    Writer& operator<<(std::uint16_t data);
-    Writer& operator<<(std::int16_t data);
-    Writer& operator<<(std::uint32_t data);
-    Writer& operator<<(std::int32_t data);
-    Writer& operator<<(std::uint64_t data);
-    Writer& operator<<(std::int64_t data);
+    IOutput& operator<<(std::uint8_t data);
+    IOutput& operator<<(std::int8_t data);
+    IOutput& operator<<(std::uint16_t data);
+    IOutput& operator<<(std::int16_t data);
+    IOutput& operator<<(std::uint32_t data);
+    IOutput& operator<<(std::int32_t data);
+    IOutput& operator<<(std::uint64_t data);
+    IOutput& operator<<(std::int64_t data);
 
-    Writer& operator<<(const char* data);
+    IOutput& operator<<(const char* data);
 
-    Writer& operator<<(float data);
+    IOutput& operator<<(float data);
 
-    // Writer& operator<<(actions::base_writer& action);
-    // Writer& operator<<(actions::base_writer&& action);
+    void set_base(IntegerBase base) { _base = base; }
+    void set_result(Result result) { _last_result = result; }
 
-     void set_base(IntegerBase base) { _base = base; }
-     void set_result(Result result) { _last_result = result; }
+    [[nodiscard]] Result get_result() const { return _last_result; }
 
-     [[nodiscard]] Result get_result() const { return _last_result; }
-
-    Writer& operator<<(function_ptr func);
+    IOutput& operator<<(function_ptr func);
 
     void set_base(IntegerBase base) { _base = base; }
 
@@ -81,10 +71,10 @@ private:
     void print_float(float number);
 };
 
-inline void endl(Writer& stream)
+inline void endl(IOutput& stream)
 {
     stream.operator<<(static_cast<std::uint8_t>('\n'));
 }
 }  // namespace lib::stream
 
-#endif  // EMBEDDED_PROJECT_STREAM_WRITTER_HPP
+#endif /* SRC_LIB_STREAM_WRITER */

@@ -5,9 +5,8 @@
 #include <cstring>
 
 #include <lib/stream/writer.hpp>
-#include <lib/stream/actions.hpp>
 
-void lib::stream::Writer::print_number(std::uint64_t number)
+void lib::stream::IOutput::print_number(std::uint64_t number)
 {
     char buffer[8 * sizeof(std::uint64_t) + 1]; // Assumes 8-bit chars plus zero byte.
     char* str = &buffer[sizeof(buffer) - 1];
@@ -25,7 +24,7 @@ void lib::stream::Writer::print_number(std::uint64_t number)
     operator<<(static_cast<const char*>(str));
 }
 
-void lib::stream::Writer::print_number(std::int64_t number)
+void lib::stream::IOutput::print_number(std::int64_t number)
 {
     if (_base == IntegerBase::Dec) {
         if (number < 0) {
@@ -39,7 +38,7 @@ void lib::stream::Writer::print_number(std::int64_t number)
     }
 }
 
-auto lib::stream::Writer::operator<<(const char* data) -> Writer&
+auto lib::stream::IOutput::operator<<(const char* data) -> IOutput&
 {
     std::size_t data_size = std::strlen(data);
 
@@ -49,61 +48,61 @@ auto lib::stream::Writer::operator<<(const char* data) -> Writer&
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::uint8_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::uint8_t data) -> IOutput&
 {
     operator<<(static_cast<std::uint64_t>(data));
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::int8_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::int8_t data) -> IOutput&
 {
     operator<<(static_cast<std::int64_t>(data));
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::uint16_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::uint16_t data) -> IOutput&
 {
     operator<<(static_cast<std::uint64_t>(data));
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::int16_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::int16_t data) -> IOutput&
 {
     operator<<(static_cast<std::int64_t>(data));
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::uint32_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::uint32_t data) -> IOutput&
 {
     operator<<(static_cast<std::uint64_t>(data));
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::int32_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::int32_t data) -> IOutput&
 {
     operator<<(static_cast<std::int64_t>(data));
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::uint64_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::uint64_t data) -> IOutput&
 {
     print_number(data);
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(std::int64_t data) -> Writer&
+auto lib::stream::IOutput::operator<<(std::int64_t data) -> IOutput&
 {
     print_number(data);
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(function_ptr func) -> Writer&
+auto lib::stream::IOutput::operator<<(function_ptr func) -> IOutput&
 {
     func(*this);
     return *this;
 }
 
-void lib::stream::Writer::print_float(float number)
+void lib::stream::IOutput::print_float(float number)
 {
     if (number < 0.0f) {
         write(static_cast<std::uint8_t>('-'));
@@ -133,7 +132,7 @@ void lib::stream::Writer::print_float(float number)
         remainder -= to_print;
     }
 }
-auto lib::stream::Writer::operator<<(float data) -> Writer&
+auto lib::stream::IOutput::operator<<(float data) -> IOutput&
 {
     print_float(data);
     return *this;
