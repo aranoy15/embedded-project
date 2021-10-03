@@ -24,6 +24,18 @@ bool is_started();
 
 bool block_init(std::uint8_t* ptr, std::size_t size);
 
+namespace critical
+{
+    void enter();
+    void exit();
+
+    struct Section final
+    {
+        Section() { enter(); }
+        ~Section() { exit(); }
+    };
+}
+
 template<std::size_t heap_size, std::size_t task_count>
 class Scheduler final
 {

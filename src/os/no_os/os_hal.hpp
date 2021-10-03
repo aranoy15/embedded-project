@@ -6,6 +6,7 @@
 #define EMBEDDED_PROJECT_OS_HAL_HPP
 
 #include <cinttypes>
+#include <os_queue.hpp>
 
 namespace os
 {

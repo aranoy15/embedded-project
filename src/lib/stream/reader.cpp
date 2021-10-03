@@ -6,12 +6,6 @@
 #include <lib/stream/reader.hpp>
 #include <lib/stream/actions.hpp>
 
-lib::stream::Reader::Reader()
-    : _timeout(1000),
-      _lookahead_mode(LookaheadMode::SkipAll)
-{
-}
-
 auto lib::stream::Reader::operator>>(actions::base_reader& action) -> Reader&
 {
     action.action(*this);

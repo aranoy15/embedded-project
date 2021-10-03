@@ -1,5 +1,6 @@
 #include <os.hpp>
 #include <list>
+#include <csp.hpp>
 
 namespace
 {
@@ -50,6 +51,11 @@ bool os::stop()
     return true;
 }
 
+bool os::is_started()
+{
+    return ::is_started;
+}
+
 bool os::task::Task::start() noexcept
 {
     tasks_list.push_back(this);
@@ -59,4 +65,14 @@ bool os::task::Task::start() noexcept
 void os::task::Task::static_func(argument_t argument)
 {
     (void)argument;
+}
+
+void os::critical::enter()
+{
+    csp::critical::enter();
+}
+
+void os::critical::exit()
+{
+    csp::critical::exit();
 }

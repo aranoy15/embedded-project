@@ -18,3 +18,13 @@ void csp::jump_to(std::uint32_t address)
     reset_vector();
 }
 
+void csp::critical::enter()
+{
+    __disable_irq();
+}
+
+void csp::critical::exit()
+{
+    __enable_irq();
+}
+

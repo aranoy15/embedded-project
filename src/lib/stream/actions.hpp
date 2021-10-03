@@ -34,6 +34,27 @@ struct int_base : base_writer
     integer_base_t base;
 };
 
+struct buffer_write : base_writer
+{
+public:
+    buffer_write(std::uint8_t* buffer, std::size_t size);
+    void action(Writer& stream) override;
+
+private:
+    std::uint8_t* _buffer;
+    std::size_t _size;
+};
+
+struct byte_write : base_writer
+{
+public:
+    explicit byte_write(std::uint8_t byte);
+    void action(Writer& stream);
+
+private:
+    std::uint8_t _byte;
+};
+
 struct buffer_read : base_reader
 {
 public:
@@ -46,11 +67,24 @@ private:
     std::size_t  _size;
 };
 
+struct byte_read : base_reader
+{
+    using tick_t = os::task::tick_t;
+
+    explicit byte_read(std::uint8_t& byte, tick_t timeout = 100);
+    void action(Reader& stream) override;
+
+
+private:
+    std::uint8_t& _byte;
+    tick_t _timeout;
+};
+
 struct lookahead : base_reader
 {
     using lookahead_mode_t = Reader::LookaheadMode;
 
-    lookahead(lookahead_mode_t lookahead);
+    explicit lookahead(lookahead_mode_t lookahead);
     void action(Reader& stream) override;
 
 private:

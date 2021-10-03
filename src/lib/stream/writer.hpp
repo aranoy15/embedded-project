@@ -26,6 +26,14 @@ public:
         Bin = 2
     };
 
+    enum class Result : std::uint8_t
+    {
+        None = 0,
+        Ok,
+        Error,
+        Timeout
+    };
+
 public:
      Writer() = default;
      virtual ~Writer() = default;
@@ -50,10 +58,14 @@ public:
      Writer& operator<<(actions::base_writer&& action);
 
      void set_base(IntegerBase base) { _base = base; }
+     void set_result(Result result) { _last_result = result; }
+
+     [[nodiscard]] Result get_result() const { return _last_result; }
 
 private:
     IntegerBase _base = IntegerBase::Dec;
     std::uint8_t _digits = 2;
+    Result _last_result = Result::None;
 
 private:
     void print_number(std::int64_t number);

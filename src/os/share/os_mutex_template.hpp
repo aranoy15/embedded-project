@@ -6,8 +6,7 @@
 #define SRC_OS_SHARE_OS_MUTEX_TEMPLATE_HPP
 
 #include <os_hal.hpp>
-//#include <concepts>
-#include <lock.hpp>
+#include <lib/lock/lock.hpp>
 #include <cassert>
 
 namespace os::mutex

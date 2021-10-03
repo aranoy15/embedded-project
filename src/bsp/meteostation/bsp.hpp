@@ -1,12 +1,12 @@
-#ifndef BSP_METEOSTATION_BSP
-#define BSP_METEOSTATION_BSP
+//
+// Created by Антон Федосеев on 30.08.2021.
+//
 
-#include <bsp/meteostation/gpio.hpp>
-#include <bsp/meteostation/usb.hpp>
+#ifndef SRC_BSP_METEOSTATION_BSP_HPP
+#define SRC_BSP_METEOSTATION_BSP_HPP
 
-namespace bsp
-{
-void init();
-}
+#include <bsp_template.hpp>
+#include <bsp_usb_template.hpp>
+#include <bsp_gpio.hpp>
 
-#endif /* BSP_METEOSTATION_BSP */
+#endif  // SRC_BSP_METEOSTATION_BSP_HPP

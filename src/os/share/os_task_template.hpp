@@ -6,7 +6,6 @@
 #define SRC_OS_SHARE_OS_TASK_TEMPLATE_HPP
 
 #include <os_hal.hpp>
-#include <os_queue_template.hpp>
 
 namespace os::task
 {
@@ -33,7 +32,6 @@ public:
     using stack_t = std::size_t;
     using priority_t = os::task::Priority;
     using argument_t = void*;
-    //using event_queue_t = os::queue::Queue<os::event::EventData, 10>;
 
 public:
     Task(priority_t priority, stack_t stack, tick_t timeout = 0)
@@ -61,7 +59,6 @@ private:
 
     tick_t _start;
     tick_t _timeout;
-    //event_queue_t _event_queue;
 
 private:
     static void static_func(argument_t argument);

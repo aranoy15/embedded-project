@@ -80,10 +80,11 @@ public:
     template <std::size_t copy_length>
     string& operator=(const string<copy_length>& other) noexcept;
     string& operator=(const char* str) noexcept;
-    char operator[](int index) const noexcept;
-    char operator[](std::size_t index) const noexcept;
+
     char& operator[](int index) noexcept;
     char& operator[](std::size_t index) noexcept;
+    const char& operator[](int index) const noexcept;
+    const char& operator[](std::size_t index) const noexcept;
 
 private:
     char _data[length + sizeof(TERMINATOR)];
@@ -171,29 +172,28 @@ void string<length>::append(string<append_length>& str) noexcept
 }
 
 template <std::size_t length>
-char string<length>::operator[](int index) const noexcept
-{
-    if (index < 0 or index >= _size) return _data[0];
-    return _data[index];
-}
-
-template <std::size_t length>
-char string<length>::operator[](std::size_t index) const noexcept
-{
-    if (index >= _size) return _data[0];
-    return _data[index];
-}
-
-template <std::size_t length>
 char& string<length>::operator[](int index) noexcept
 {
     if (index < 0 or index >= _size) return _data[0];
     return _data[index];
 }
 
-
 template <std::size_t length>
 char& string<length>::operator[](std::size_t index) noexcept
+{
+    if (index >= _size) return _data[0];
+    return _data[index];
+}
+
+template <std::size_t length>
+const char& string<length>::operator[](int index) const noexcept
+{
+    if (index < 0 or index >= _size) return _data[0];
+    return _data[index];
+}
+
+template <std::size_t length>
+const char& string<length>::operator[](std::size_t index) const noexcept
 {
     if (index >= _size) return _data[0];
     return _data[index];

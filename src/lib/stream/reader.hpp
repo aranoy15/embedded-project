@@ -28,8 +28,16 @@ public:
         SkipWhitespace
     };
 
+    enum class Result : std::uint8_t
+    {
+        None = 0,
+        Ok,
+        Error,
+        Timeout
+    };
+
 public:
-    Reader();
+    Reader() = default;
     virtual ~Reader() = default;
 
     virtual int available() = 0;
@@ -58,18 +66,19 @@ public:
     std::int64_t parse_int(LookaheadMode lookahead, char ignore);
     float parse_float(LookaheadMode, char ignore);
 
+    void set_result(Result result) { _last_result = result; }
+    [[nodiscard]] Result get_result() const { return _last_result; }
+
 protected:
-    tick_t _timeout;
-    LookaheadMode _lookahead_mode;
+    tick_t _timeout = 1000;
+    LookaheadMode _lookahead_mode = LookaheadMode::SkipAll;
+    Result _last_result = Result::None;
 
 protected:
     int timed_read();
     int timed_peek();
     int peek_next_digit(LookaheadMode lookahead, bool detect_decimal);
 
-//protected:
-//    std::uint32_t parse_int(char ignore);
-//    float parse_float(char ignore);
 };
 }
 

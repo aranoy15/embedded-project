@@ -12,15 +12,16 @@ endif()
 target_include_directories(${APP_TARGET} PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(${APP_TARGET} PRIVATE
-        CSP::${CHIP}::CORE
-        CSP::${CHIP}::TickSource::SysTick
-        CSP::${CHIP}::DEVICE::USB::CDC
-        CSP::${CHIP}::TIMER
-        CSP::${CHIP}::I2C
-        CSP::${CHIP}::UART
-        LIB::TIME
-        LIB::STREAM
-        OS::NoOs
+        #CSP::${CHIP}::DEVICE::USB::CDC
+        #CSP::${CHIP}::TIMER
+        #CSP::${CHIP}::I2C
+        #CSP::${CHIP}::UART
+        #LIB::TIME
+        #LIB::STREAM
+        #LIB::LOCK
+        #OS::NoOs
+        BSP::CORE
+        OS::${APP_OS}
         )
 
 #target_link_libraries(boot PRIVATE

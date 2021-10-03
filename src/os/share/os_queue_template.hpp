@@ -35,18 +35,16 @@ public:
         os::queue::remove(_id);
     }
 
-    bool put(const T& data)
+    bool push(const T& data)
     {
         return os::queue::put(_id, reinterpret_cast<const void*>(&data), sizeof(T));
     }
 
-    id_t id() { return _id; }
-
     [[nodiscard]] std::size_t size() const { return os::queue::size(_id); }
-    [[nodiscard]] bool is_full() const { return size() == length; }
-    [[nodiscard]] bool is_empty() const { return size() == 0; }
+    [[nodiscard]] bool full() const { return size() == length; }
+    [[nodiscard]] bool empty() const { return size() == 0; }
 
-    T get()
+    T pop()
     {
         T result;
         os::queue::get(_id, reinterpret_cast<void*>(&result), sizeof(T));
@@ -62,6 +60,9 @@ public:
 private:
     id_t _id;
 };
+
+template<typename T, std::size_t length>
+using queue_t = Queue<T, length>;
 }
 
 #endif  // SRC_OS_SHARE_OS_QUEUE_TEMPLATE_HPP

@@ -22,7 +22,7 @@ public:
 
     void push(const T& item);
     T pop();
-    bool peek(T& item);
+    bool peek(T& item) const;
     void clear();
 
 private:
@@ -85,7 +85,7 @@ T queue<T, length>::pop()
 }
 
 template <typename T, std::size_t length>
-bool queue<T, length>::peek(T& item)
+bool queue<T, length>::peek(T& item) const
 {
     if (empty()) return false;
     item = _data[_tail];

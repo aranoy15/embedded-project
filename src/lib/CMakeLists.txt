@@ -1,5 +1,5 @@
-add_subdirectory(buffers)
 add_subdirectory(data)
 add_subdirectory(utils)
 add_subdirectory(time)
 add_subdirectory(stream)
+add_subdirectory(lock)

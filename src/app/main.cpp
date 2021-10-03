@@ -2,6 +2,41 @@
 // Created by Антон Федосеев on 27.06.2021.
 //
 
+#include <bsp.hpp>
+#include <os.hpp>
+
+using scheduler_t = os::Scheduler<15 * 1024, 5>;
+
+class BlinkTask : public os::task::Task
+    {
+    public:
+        BlinkTask()
+        : os::task::Task(os::task::Priority::Idle, 1024, 100)
+        {}
+
+        void setup() noexcept override
+        {
+            bsp::gpio::status::init();
+        }
+
+        void loop() noexcept override
+        {
+            bsp::gpio::status::toggle();
+        }
+    };
+
+
+int main()
+{
+    bsp::init();
+
+    scheduler_t::reg<BlinkTask>();
+
+    scheduler_t::init();
+    scheduler_t::start();
+}
+
+/*
 #include <csp.hpp>
 #include <os.hpp>
 
@@ -65,11 +100,22 @@ void csp::usb::receive_callback(Number number, uint8_t data[], std::size_t size)
 }
 
 class LogStream : public lib::stream::Writer,
-                  public lib::stream::Reader
+                  public lib::stream::Reader,
+                  public lib::lock::Lockable
 {
 public:
-    LogStream() : Writer(), Reader() { set_timeout(0); }
-    virtual ~LogStream() = default;
+    LogStream() : Writer(), Reader(), _mutex() { set_timeout(0); }
+    ~LogStream() override = default;
+
+    void lock() override
+    {
+        _mutex.lock();
+    }
+
+    void unlock() override
+    {
+        _mutex.unlock();
+    }
 
     int available() override
     {
@@ -99,7 +145,68 @@ public:
     }
 
     void flush() override {}
+
+private:
+    os::mutex_t _mutex;
 };
+
+class I2cStream : public lib::stream::Writer,
+                  public lib::stream::Reader,
+                  public lib::lock::Lockable
+{
+public:
+    I2cStream() : _address(0), _mutex() {}
+    ~I2cStream() override = default;
+
+    void lock() override { _mutex.lock(); }
+    void unlock() override { _mutex.unlock(); }
+
+    int available() override { return 1; }
+
+    int read() override
+    {
+        std::uint8_t data = 0;
+
+        if (csp::i2c::receive(i2c_number, i2c_transfer_mode, _address, &data, sizeof(data)))
+            return static_cast<int>(data);
+
+        return -1;
+    }
+
+    int peek() override
+    {
+        return -1;
+    }
+
+    void write(std::uint8_t data) override
+    {
+        _data.push_back(data);
+    }
+
+    void flush() override
+    {
+        csp::i2c::transmit(i2c_number, i2c_transfer_mode, _address,
+                           _data.data(), _data.size());
+        _data.clear();
+    }
+
+    void set_address(std::uint16_t address) { _address = address; }
+    [[nodiscard]] std::uint16_t get_address() const { return _address; }
+
+private:
+    std::uint16_t _address;
+    os::mutex_t _mutex;
+    lib::data::vector<std::uint8_t, 32> _data;
+};
+
+namespace
+{
+LogStream& log_stream()
+{
+    static LogStream instance;
+    return instance;
+}
+}
 
 class BlinkTask : public os::task::Task
 {
@@ -116,17 +223,30 @@ public:
     void loop() noexcept override
     {
         status_led::toggle();
-        LogStream stream;
+        //LogStream stream;
         static lib::data::string<128> input_str;
 
-        stream >> input_str;
+        {
+            lib::lock::Lock lock(&log_stream());
 
-        if (not input_str.empty()) {
-            stream << "Receive: " << input_str << lib::stream::actions::endl();
-            input_str.clear();
+            log_stream() >> input_str;
+            if (not input_str.empty()) {
+                log_stream() << "Receive: " << input_str
+                             << lib::stream::actions::endl();
+                input_str.clear();
+            }
         }
     }
 };
+
+namespace
+{
+I2cStream& i2c_stream()
+{
+    static I2cStream instance;
+    return instance;
+}
+}
 
 class SensorTask : public os::task::Task
 {
@@ -154,12 +274,32 @@ public:
 
         float f_data = 13.27f;
 
-        LogStream() << "CO2 concentration: " << co2_value << endl();
-        LogStream() << "Float test: " << f_data << endl();
+        {
+            lib::lock::Lock lock(&log_stream());
+
+            log_stream() << "CO2 concentration: " << co2_value << endl();
+            log_stream() << "Float test: " << f_data << endl();
+        }
 
         csp::uart::transmit(mhz_number, mhz_transfer_mode, data, sizeof(data));
 
-        i2c_scanner();
+        //i2c_scanner();
+        {
+            lib::lock::Lock lock(&i2c_stream());
+
+            i2c_stream().set_address(0x76);
+
+            i2c_stream() << lib::stream::actions::byte_write(0xD0);
+            i2c_stream().flush();
+
+            std::uint8_t result = 0;
+            i2c_stream() >> lib::stream::actions::byte_read(result);
+
+            {
+                lib::lock::Lock log_lock(&log_stream());
+                log_stream() << "I2C read result: " << result << lib::stream::actions::endl();
+            }
+        }
     }
 
 private:
@@ -193,3 +333,4 @@ int main()
     scheduler_t::init();
     scheduler_t::start();
 }
+*/
