@@ -1,7 +1,3 @@
-//
-// Created by Антон Федосеев on 27.06.2021.
-//
-
 #include <bsp.hpp>
 #include <os.hpp>
 
@@ -320,11 +316,6 @@ private:
                 //LogStream() << int_base(int_base::integer_base_t::Hex) << "Ok I2C address: 0x" << i << endl();
             }
         }
-
-        /*
-        if (count == 0)
-            LogStream() << "Not found any devices" << endl();
-        */
     }
 };
 

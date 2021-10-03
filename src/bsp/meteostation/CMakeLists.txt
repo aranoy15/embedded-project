@@ -2,7 +2,6 @@ add_library(bsp_core INTERFACE)
 
 target_sources(bsp_core INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/bsp.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/gpio.cpp
 )
 
 target_include_directories(bsp_core INTERFACE
