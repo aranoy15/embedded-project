@@ -7,7 +7,7 @@
 
 void csp::jump_to(std::uint32_t address)
 {
-    __disable_irq();  // запрещаем прерывания
+    __disable_irq();  // disable interrupts
 
     SCB->VTOR = address;
     auto int_vector_table = (uint32_t *)address;

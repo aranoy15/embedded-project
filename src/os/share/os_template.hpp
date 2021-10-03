@@ -5,10 +5,11 @@
 #ifndef EMBEDDED_PROJECT_OS_TEMPLATE_HPP
 #define EMBEDDED_PROJECT_OS_TEMPLATE_HPP
 
+#include "os_hal.hpp"
+#include "os_task_template.hpp"
+
 #include <cinttypes>
-#include <os_task_template.hpp>
 #include <type_traits>
-#include <os_hal.hpp>
 #include <utility>
 
 namespace os

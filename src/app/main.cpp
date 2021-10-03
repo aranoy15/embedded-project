@@ -46,6 +46,7 @@ int main()
 #include <lib/stream/writer.hpp>
 #include <lib/stream/actions.hpp>
 #include <lib/stream/reader.hpp>
+#include <lib/data/view.hpp>
 
 using scheduler_t = os::Scheduler<15 * 1024, 5>;
 
@@ -236,6 +237,11 @@ public:
                 input_str.clear();
             }
         }
+
+        const char* test = "Hello, World!";
+        std::size_t test_size = strlen(test);
+
+        auto test_view = lib::data::view(test, test_size);
     }
 };
 
@@ -270,9 +276,8 @@ public:
 
         std::uint16_t co2_value = (receive_data[2] << 8) | receive_data[3];
 
-        using endl = lib::stream::actions::endl;
 
-        float f_data = 13.27f;
+        [[maybe_unused]] float f_data = 13.27f;
 
         {
             lib::lock::Lock lock(&log_stream());
@@ -312,12 +317,14 @@ private:
             //LogStream() << int_base(int_base::integer_base_t::Hex) << "Check i2c address: 0x" << i << endl();
             if (csp::i2c::is_device_ready(i2c_number, i)) {
                 count++;
-                LogStream() << int_base(int_base::integer_base_t::Hex) << "Ok I2C address: 0x" << i << endl();
+                //LogStream() << int_base(int_base::integer_base_t::Hex) << "Ok I2C address: 0x" << i << endl();
             }
         }
 
+        /*
         if (count == 0)
             LogStream() << "Not found any devices" << endl();
+        */
     }
 };
 

@@ -97,16 +97,12 @@ auto lib::stream::Writer::operator<<(std::int64_t data) -> Writer&
     return *this;
 }
 
-auto lib::stream::Writer::operator<<(actions::base_writer& action) -> Writer&
+auto lib::stream::Writer::operator<<(function_ptr func) -> Writer&
 {
-    action.action(*this);
+    func(*this);
     return *this;
 }
-auto lib::stream::Writer::operator<<(actions::base_writer&& action) -> Writer&
-{
-    action.action(*this);
-    return *this;
-}
+
 void lib::stream::Writer::print_float(float number)
 {
     if (number < 0.0f) {
